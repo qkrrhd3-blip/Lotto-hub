@@ -1,0 +1,22 @@
+{
+  "name": "Lotto Hub",
+  "short_name": "로또 허브",
+  "description": "개인 맞춤형 로또 번호 추천 및 최신 당첨 결과 조회",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0d1117",
+  "theme_color": "#0066cc",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "./icon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "./icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
