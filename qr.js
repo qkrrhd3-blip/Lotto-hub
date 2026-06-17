@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function startScanner() {
     html5QrCode.start(
-        { facingMode: "environment" }, // 후면 카메라 강제
+        { facingMode: { exact: "environment" } }, // 후면 카메라 강제
         {
             fps: 10,
             qrbox: { width: 250, height: 250 }
