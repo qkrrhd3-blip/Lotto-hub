@@ -34,10 +34,10 @@
                 android:resource="@xml/file_paths"></meta-data>
         </provider>
 
-        <!-- 구글 애드몹 앱 ID (현재 테스트용 ID) -->
+        <!-- 구글 애드몹 앱 ID -->
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-3940256099942544~3347511713"/>
+            android:value="ca-app-pub-1589121187855891~2412121477"/>
     </application>
 
     <!-- Permissions -->

@@ -257,17 +257,17 @@
                     
                     // Show Banner Ad at the bottom
                     await AdMob.showBanner({
-                        adId: 'ca-app-pub-3940256099942544/6300978111', // Test Banner ID
+                        adId: 'ca-app-pub-1589121187855891/5536936702', // Real Banner ID
                         adSize: 'BANNER',
                         position: 'BOTTOM_CENTER',
                         margin: 0,
-                        isTesting: true
+                        isTesting: false
                     });
 
                     // Prepare Interstitial Ad
                     await AdMob.prepareInterstitial({
-                        adId: 'ca-app-pub-3940256099942544/1033173712', // Test Interstitial ID
-                        isTesting: true
+                        adId: 'ca-app-pub-1589121187855891/4271998050', // Real Interstitial ID
+                        isTesting: false
                     });
 
                     // Example: Show Interstitial on some action (hooking into lotto generation)
@@ -279,8 +279,8 @@
                                 await AdMob.showInterstitial();
                                 // Re-prepare for next time
                                 await AdMob.prepareInterstitial({
-                                    adId: 'ca-app-pub-3940256099942544/1033173712',
-                                    isTesting: true
+                                    adId: 'ca-app-pub-1589121187855891/4271998050',
+                                    isTesting: false
                                 });
                             }
                         });
