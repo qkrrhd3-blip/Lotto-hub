@@ -595,10 +595,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 saveBtn.style.fontSize = '1.05rem';
                 saveBtn.style.boxShadow = '0 4px 15px rgba(251, 196, 0, 0.4)';
                 
-                // 생성된 게임 배열 형태로 묶기
+                // 생성된 게임 배열 형태로 묶기 (파이어베이스는 중첩 배열을 지원하지 않으므로 객체 배열로 변환)
                 const gamesArray = [];
                 for(let i=0; i<gameCount; i++) {
-                    gamesArray.push(allGeneratedNumbers.slice(i*6, (i+1)*6));
+                    gamesArray.push({
+                        numbers: allGeneratedNumbers.slice(i*6, (i+1)*6)
+                    });
                 }
                 
                 saveBtn.addEventListener('click', async () => {

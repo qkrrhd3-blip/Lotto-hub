@@ -169,11 +169,13 @@ async function loadSavedGames() {
             card.className = 'saved-game-card';
             
             let gamesHtml = '';
-            record.games.forEach((game, idx) => {
-                const winResult = checkWinning(game, winData);
+            record.games.forEach((gameObj, idx) => {
+                // 이전에 중첩 배열로 저장된 데이터가 있다면 배열 자체로, 새 데이터는 gameObj.numbers로
+                const gameNums = Array.isArray(gameObj) ? gameObj : gameObj.numbers;
+                const winResult = checkWinning(gameNums, winData);
                 
                 let ballsHtml = '';
-                game.forEach(num => {
+                gameNums.forEach(num => {
                     // 당첨 번호에 포함되면 빛나게 처리
                     const isWinNum = winData && winData.numbers.includes(num);
                     const isBonus = winData && winData.bonus === num;
