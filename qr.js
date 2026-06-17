@@ -21,17 +21,18 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function startScanner() {
-    html5QrCode.start(
-        { facingMode: { exact: "environment" } }, // 후면 카메라 강제
-        {
-            fps: 10,
-            qrbox: { width: 250, height: 250 }
-        },
-        onScanSuccess,
-        onScanFailure
-    ).catch(err => {
-        console.error("Camera start failed:", err);
-        alert("카메라를 시작할 수 없습니다. 후면 카메라 권한을 확인해주세요.");
+    const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+    
+    // 1차 시도: 후면 카메라 강제
+    html5QrCode.start({ facingMode: { exact: "environment" } }, config, onScanSuccess, onScanFailure)
+    .catch(err => {
+        console.warn("후면 카메라 실패, 기본(PC 웹캠 등) 카메라로 전환합니다.", err);
+        // 2차 시도: 후면이 없으면 전면/기본 웹캠 시도
+        html5QrCode.start({ facingMode: "user" }, config, onScanSuccess, onScanFailure)
+        .catch(err2 => {
+            console.error("Camera start failed:", err2);
+            alert("카메라를 시작할 수 없습니다. 장치의 카메라 권한을 확인해주세요.");
+        });
     });
 }
 
