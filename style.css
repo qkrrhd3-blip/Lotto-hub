@@ -1027,7 +1027,24 @@ body {
     }
 
     .nav {
-        display: none; /* 모바일 메뉴 간소화 */
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
+        margin-top: 15px;
+        width: 100%;
+    }
+    .header .container {
+        flex-direction: column;
+        align-items: center;
+    }
+    #authNavContainer {
+        border-left: none !important;
+        padding-left: 0 !important;
+        margin-left: 0 !important;
+        width: 100%;
+        justify-content: center;
+        margin-top: 5px;
     }
 
     .action-box {
