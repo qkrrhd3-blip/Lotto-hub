@@ -77,6 +77,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 alert('이메일 또는 비밀번호가 일치하지 않습니다.');
             }
         });
+
+        // Forgot Password Logic
+        const forgotPasswordBtn = document.getElementById('forgotPasswordBtn');
+        if (forgotPasswordBtn) {
+            forgotPasswordBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const emailInput = prompt('가입하신 이메일 주소를 입력해 주세요.');
+                if (emailInput) {
+                    const users = JSON.parse(localStorage.getItem('lotto_hub_users')) || [];
+                    const foundUser = users.find(u => u.email === emailInput.trim());
+                    if (foundUser) {
+                        alert(`회원님의 비밀번호는 [ ${foundUser.password} ] 입니다.\n확인 후 다시 로그인해 주세요.`);
+                    } else {
+                        alert('해당 이메일로 가입된 계정을 찾을 수 없습니다.');
+                    }
+                }
+            });
+        }
     }
 
     // Signup Logic
