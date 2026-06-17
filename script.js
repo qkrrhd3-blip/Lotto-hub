@@ -1,25 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Auth display logic
-    const currentUser = JSON.parse(localStorage.getItem('lotto_hub_current_user'));
-    const authNavContainer = document.getElementById('authNavContainer');
-    
-    if (authNavContainer) {
-        if (currentUser) {
-            authNavContainer.innerHTML = `
-                <span style="color: var(--text-muted); margin-right: 15px; font-size: 0.9rem;">${currentUser.email}님</span>
-                <a href="#" id="logoutBtn" class="nav-btn" style="border: 1px solid var(--border-color);">로그아웃</a>
-            `;
-            document.getElementById('logoutBtn').addEventListener('click', (e) => {
-                e.preventDefault();
-                localStorage.removeItem('lotto_hub_current_user');
-                window.location.reload();
-            });
-        } else {
-            authNavContainer.innerHTML = `
-                <a href="login.html" class="nav-btn primary">로그인 / 회원가입</a>
-            `;
-        }
-    }
 
     const observerOptions = {
         threshold: 0.1,
