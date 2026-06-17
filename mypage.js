@@ -236,8 +236,35 @@ async function loadSavedGames() {
                 <div class="saved-games-list">
                     ${gamesHtml}
                 </div>
+                <div style="text-align: right; margin-top: 15px;">
+                    <button class="delete-record-btn" data-id="${record.id}" style="padding: 6px 12px; background: #ff4d4f; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.85rem;">이 내역 삭제하기</button>
+                </div>
             `;
             
+            // 삭제 버튼 이벤트
+            const deleteBtn = card.querySelector('.delete-record-btn');
+            deleteBtn.addEventListener('click', async () => {
+                if (confirm('이 저장 내역을 정말 삭제하시겠습니까?')) {
+                    try {
+                        const { db, doc, deleteDoc } = window.firebaseDB;
+                        await deleteDoc(doc(db, "saved_numbers", record.id));
+                        alert('삭제되었습니다.');
+                        // 화면에서 제거
+                        tab.remove();
+                        card.remove();
+                        // 탭이 지워졌으므로 첫 번째 탭 자동 클릭
+                        const remainingTabs = tabsContainer.querySelectorAll('button');
+                        if (remainingTabs.length > 0) remainingTabs[0].click();
+                        else savedGamesContainer.innerHTML = '<p style="text-align:center; padding: 40px; color: var(--text-muted);">저장된 내역이 없습니다.</p>';
+                        
+                        savedCount.textContent = \`(\${remainingTabs.length}건)\`;
+                    } catch (err) {
+                        console.error('삭제 오류:', err);
+                        alert('삭제 중 오류가 발생했습니다.');
+                    }
+                }
+            });
+
             // 탭 클릭 이벤트
             tab.addEventListener('click', () => {
                 tabs.forEach(t => { 
