@@ -1,6 +1,6 @@
 // db.js (Firebase 모듈 연동 및 초기화)
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs, getDoc, doc, deleteDoc, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, getDocs, getDoc, doc, deleteDoc, query, orderBy, limit, where } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 import { getStorage, ref, uploadString, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-storage.js";
 
 // 회원님이 주신 Firebase 설정
@@ -32,6 +32,7 @@ window.firebaseDB = {
     query: query,
     orderBy: orderBy,
     limit: limit,
+    where: where,
     ref: ref,
     uploadString: uploadString,
     getDownloadURL: getDownloadURL

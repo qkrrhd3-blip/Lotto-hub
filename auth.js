@@ -42,7 +42,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (authNavContainer) {
         if (currentUser) {
             authNavContainer.innerHTML = `
-                <span style="color: var(--text-muted); margin-right: 15px; font-size: 0.9rem;">${currentUser.email}님</span>
+                <a href="mypage.html" class="nav-btn" style="color: var(--primary-color); font-weight: bold;">마이페이지</a>
+                <span style="color: var(--text-muted); margin-right: 15px; margin-left: 15px; font-size: 0.9rem;">${currentUser.email}님</span>
                 <a href="#" id="logoutBtn" class="nav-btn" style="border: 1px solid var(--border-color);">로그아웃</a>
             `;
 

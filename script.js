@@ -603,6 +603,56 @@ document.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
                 summaryContainer.style.opacity = '1';
                 summaryContainer.style.transform = 'translateY(0)';
+                
+                // --- 내 번호 저장 버튼 추가 ---
+                const saveBtnContainer = document.createElement('div');
+                saveBtnContainer.style.marginTop = '25px';
+                saveBtnContainer.style.textAlign = 'center';
+                
+                const saveBtn = document.createElement('button');
+                saveBtn.className = 'btn primary';
+                saveBtn.innerHTML = '💾 이 번호 묶음 마이페이지에 저장하기';
+                saveBtn.style.padding = '15px 30px';
+                saveBtn.style.fontSize = '1.05rem';
+                saveBtn.style.boxShadow = '0 4px 15px rgba(251, 196, 0, 0.4)';
+                
+                // 생성된 게임 배열 형태로 묶기
+                const gamesArray = [];
+                for(let i=0; i<gameCount; i++) {
+                    gamesArray.push(allGeneratedNumbers.slice(i*6, (i+1)*6));
+                }
+                
+                saveBtn.addEventListener('click', async () => {
+                    const currentUser = JSON.parse(localStorage.getItem('lotto_hub_current_user'));
+                    if(!currentUser) {
+                        alert('로그인이 필요한 프리미엄 기능입니다. 로그인 후 이용해주세요.');
+                        window.location.href = 'login.html';
+                        return;
+                    }
+                    
+                    try {
+                        const { collection, addDoc, db } = window.firebaseDB;
+                        await addDoc(collection(db, "saved_numbers"), {
+                            email: currentUser.email,
+                            drawNo: nextDrawNo,
+                            games: gamesArray,
+                            timestamp: new Date().toISOString()
+                        });
+                        alert('🎉 번호가 안전하게 마이페이지에 저장되었습니다! 매주 토요일 당첨 결과가 자동 대조됩니다.');
+                        saveBtn.disabled = true;
+                        saveBtn.innerHTML = '✅ 저장 완료됨';
+                        saveBtn.style.background = 'var(--text-muted)';
+                        saveBtn.style.boxShadow = 'none';
+                    } catch (e) {
+                        console.error('Error saving numbers:', e);
+                        alert('번호 저장 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+                    }
+                });
+                
+                saveBtnContainer.appendChild(saveBtn);
+                resultBalls.appendChild(saveBtnContainer);
+                // -----------------------------
+                
             }, 50);
             
         }, (gameCount * 150) + (6 * 80) + 500);
