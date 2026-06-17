@@ -624,7 +624,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         saveBtn.style.boxShadow = 'none';
                     } catch (e) {
                         console.error('Error saving numbers:', e);
-                        alert('번호 저장 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+                        alert('번호 저장 중 오류가 발생했습니다. 에러 원인: ' + e.message);
                     }
                 });
                 
