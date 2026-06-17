@@ -1,33 +1,48 @@
 // qr.js
 
-let html5QrcodeScanner;
+let html5QrCode;
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Check if Html5QrcodeScanner is loaded
-    if (typeof Html5QrcodeScanner === 'undefined') {
+    // Check if Html5Qrcode is loaded
+    if (typeof Html5Qrcode === 'undefined') {
         alert("카메라 라이브러리를 불러오는데 실패했습니다. 새로고침 해주세요.");
         return;
     }
 
-    // Initialize scanner
-    html5QrcodeScanner = new Html5QrcodeScanner(
-        "reader",
-        { fps: 10, qrbox: {width: 250, height: 250} },
-        /* verbose= */ false
-    );
-    html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+    html5QrCode = new Html5Qrcode("reader");
+    startScanner();
 
     document.getElementById('rescanBtn').addEventListener('click', () => {
         document.getElementById('result-container').style.display = 'none';
         document.getElementById('reader').style.display = 'block';
         document.getElementById('rescanBtn').style.display = 'none';
-        html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+        startScanner();
     });
 });
 
+function startScanner() {
+    html5QrCode.start(
+        { facingMode: "environment" }, // 후면 카메라 강제
+        {
+            fps: 10,
+            qrbox: { width: 250, height: 250 }
+        },
+        onScanSuccess,
+        onScanFailure
+    ).catch(err => {
+        console.error("Camera start failed:", err);
+        alert("카메라를 시작할 수 없습니다. 후면 카메라 권한을 확인해주세요.");
+    });
+}
+
 async function onScanSuccess(decodedText, decodedResult) {
     // stop scanning
-    html5QrcodeScanner.clear();
+    try {
+        await html5QrCode.stop();
+    } catch (e) {
+        console.error("Failed to stop scanner", e);
+    }
+    
     document.getElementById('reader').style.display = 'none';
     document.getElementById('rescanBtn').style.display = 'inline-block';
     
