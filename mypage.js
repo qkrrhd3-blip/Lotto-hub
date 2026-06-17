@@ -114,11 +114,183 @@ function checkWinning(myNumbers, winData) {
     return { rank: 6, html: '<span class="win-badge win-none">낙첨</span>' };
 }
 
+async function renderSavedGamesList(docs) {
+    savedCount.textContent = `(${docs.length}건)`;
+
+    if (docs.length === 0) {
+        savedGamesContainer.innerHTML = `
+            <div style="text-align: center; padding: 40px; background: var(--bg-card); border-radius: 12px; border: 1px solid var(--border-color);">
+                <p style="color: var(--text-muted); font-size: 1.05rem;">아직 저장된 로또 번호가 없습니다.</p>
+                <a href="index.html" class="btn primary" style="display: inline-block; margin-top: 15px;">번호 생성하러 가기</a>
+            </div>
+        `;
+        return;
+    }
+
+    savedGamesContainer.innerHTML = '';
+
+    const tabsContainer = document.createElement('div');
+    tabsContainer.style.display = 'flex';
+    tabsContainer.style.flexWrap = 'wrap';
+    tabsContainer.style.gap = '8px';
+    tabsContainer.style.marginBottom = '20px';
+    
+    const cardsContainer = document.createElement('div');
+    
+    savedGamesContainer.appendChild(tabsContainer);
+    savedGamesContainer.appendChild(cardsContainer);
+
+    let recordIndex = docs.length;
+    const tabs = [];
+    const cards = [];
+
+    for (const record of docs) {
+        const currentIdx = recordIndex--;
+        const drawNo = record.drawNo;
+        const dateStr = new Date(record.timestamp).toLocaleDateString('ko-KR');
+        
+        // 탭 버튼 생성
+        const tab = document.createElement('button');
+        tab.textContent = `${currentIdx}번 저장건`;
+        tab.style.padding = '6px 12px';
+        tab.style.borderRadius = '20px';
+        tab.style.border = '2px solid var(--primary-color)';
+        tab.style.background = 'transparent';
+        tab.style.color = 'var(--text-main)';
+        tab.style.cursor = 'pointer';
+        tab.style.fontWeight = '600';
+        tab.style.transition = 'all 0.2s ease';
+        
+        // 카드 내용 생성
+        const card = document.createElement('div');
+        card.className = 'saved-game-card';
+        card.style.display = 'none';
+        
+        // 당첨 결과 가져오기
+        const winData = await getWinningNumbers(drawNo);
+        
+        let gamesHtml = '';
+        record.games.forEach((gameObj, idx) => {
+            const gameNums = Array.isArray(gameObj) ? gameObj : gameObj.numbers;
+            const winResult = checkWinning(gameNums, winData);
+            
+            let ballsHtml = '';
+            gameNums.forEach(num => {
+                const isWinNum = winData && winData.numbers.includes(num);
+                const isBonus = winData && winData.bonus === num;
+                const highlightStyle = isWinNum ? 'box-shadow: 0 0 10px yellow; border: 2px solid gold;' : (isBonus ? 'box-shadow: 0 0 10px red; border: 2px solid red;' : '');
+                
+                ballsHtml += `<div class="ball ${getColorClass(num)}" style="width: 32px; height: 32px; font-size: 0.85rem; ${highlightStyle}">${num}</div>`;
+            });
+
+            gamesHtml += `
+                <div class="game-row" style="margin-bottom: 10px;">
+                    <div class="game-label" style="width: 50px; font-size: 0.9rem;">${idx+1}게임</div>
+                    <div class="lotto-balls" style="gap: 5px;">
+                        ${ballsHtml}
+                    </div>
+                    ${winResult.html}
+                </div>
+            `;
+        });
+
+        const realWinHtml = winData ? `<div style="font-size: 0.85rem; color: var(--text-muted); text-align: center; margin-bottom: 15px; background: rgba(0,0,0,0.05); padding: 10px; border-radius: 8px;">이번 주 실제 당첨 번호: <strong style="color:var(--primary-color)">${winData.numbers.join(', ')} + ${winData.bonus}</strong></div>` : '';
+
+        card.innerHTML = `
+            <div class="saved-game-header">
+                <span class="draw-badge">제 ${drawNo}회 추첨</span>
+                <span style="color: var(--text-muted); font-size: 0.85rem;">저장일시: ${dateStr}</span>
+            </div>
+            ${realWinHtml}
+            <div class="saved-games-list">
+                ${gamesHtml}
+            </div>
+            <div style="text-align: right; margin-top: 15px;">
+                <button class="delete-record-btn" data-id="${record.id}" style="padding: 6px 12px; background: #ff4d4f; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.85rem;">이 내역 삭제하기</button>
+            </div>
+        `;
+        
+        // 삭제 버튼 이벤트
+        const deleteBtn = card.querySelector('.delete-record-btn');
+        deleteBtn.addEventListener('click', async () => {
+            if (confirm('이 저장 내역을 정말 삭제하시겠습니까?')) {
+                try {
+                    const { db, doc, deleteDoc } = window.firebaseDB;
+                    await deleteDoc(doc(db, "saved_numbers", record.id));
+                    
+                    // 캐시 업데이트
+                    const cacheKey = 'lotto_hub_cached_saves_' + currentUser.email;
+                    const cachedData = localStorage.getItem(cacheKey);
+                    if (cachedData) {
+                        const parsed = JSON.parse(cachedData).filter(d => d.id !== record.id);
+                        localStorage.setItem(cacheKey, JSON.stringify(parsed));
+                    }
+
+                    alert('삭제되었습니다.');
+                    // 화면에서 제거
+                    tab.remove();
+                    card.remove();
+                    
+                    // 탭이 지워졌으므로 첫 번째 탭 자동 클릭
+                    const remainingTabs = tabsContainer.querySelectorAll('button');
+                    if (remainingTabs.length > 0) remainingTabs[0].click();
+                    else savedGamesContainer.innerHTML = '<p style="text-align:center; padding: 40px; color: var(--text-muted);">저장된 내역이 없습니다.</p>';
+                    
+                    savedCount.textContent = `(${remainingTabs.length}건)`;
+                } catch (err) {
+                    console.error('삭제 오류:', err);
+                    alert('삭제 중 오류가 발생했습니다.');
+                }
+            }
+        });
+
+        // 탭 클릭 이벤트
+        tab.addEventListener('click', () => {
+            tabs.forEach(t => { 
+                t.style.background = 'transparent'; 
+                t.style.color = 'var(--text-main)'; 
+            });
+            cards.forEach(c => c.style.display = 'none');
+            
+            tab.style.background = 'var(--primary-color)';
+            tab.style.color = 'white';
+            card.style.display = 'block';
+        });
+
+        tabsContainer.appendChild(tab);
+        cardsContainer.appendChild(card);
+        
+        tabs.push(tab);
+        cards.push(card);
+    }
+    
+    // 첫 번째 탭(가장 최근) 자동 클릭
+    if (tabs.length > 0) {
+        tabs[0].click();
+    }
+}
+
 async function loadSavedGames() {
     try {
+        const cacheKey = 'lotto_hub_cached_saves_' + currentUser.email;
+        const cachedData = localStorage.getItem(cacheKey);
+        
+        if (cachedData) {
+            try {
+                const cachedDocs = JSON.parse(cachedData);
+                await renderSavedGamesList(cachedDocs);
+                loadingIndicator.style.display = 'none'; // 캐시로 이미 그렸으므로 로딩 숨김
+            } catch (e) {
+                console.error("Cache parsing error", e);
+                loadingIndicator.style.display = 'block';
+            }
+        } else {
+            loadingIndicator.style.display = 'block';
+        }
+
         const { db, collection, query, where, orderBy, getDocs } = window.firebaseDB;
         
-        // Firestore 쿼리 (인덱스 필요 가능성 - 만약 에러시 orderBy 뺄 것)
+        // Firestore 쿼리
         const q = query(
             collection(db, "saved_numbers"), 
             where("email", "==", currentUser.email),
@@ -134,8 +306,6 @@ async function loadSavedGames() {
             querySnapshot = await getDocs(qFallback);
         }
 
-        loadingIndicator.style.display = 'none';
-
         const docs = [];
         querySnapshot.forEach(doc => {
             docs.push({ id: doc.id, ...doc.data() });
@@ -143,152 +313,16 @@ async function loadSavedGames() {
 
         // 클라이언트 정렬 (fallback)
         docs.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-
-        savedCount.textContent = `(${docs.length}건)`;
-
-        if (docs.length === 0) {
-            savedGamesContainer.innerHTML = `
-                <div style="text-align: center; padding: 40px; background: var(--bg-card); border-radius: 12px; border: 1px solid var(--border-color);">
-                    <p style="color: var(--text-muted); font-size: 1.05rem;">아직 저장된 로또 번호가 없습니다.</p>
-                    <a href="index.html" class="btn primary" style="display: inline-block; margin-top: 15px;">번호 생성하러 가기</a>
-                </div>
-            `;
-            return;
+        
+        const docsString = JSON.stringify(docs);
+        
+        // 만약 서버 데이터가 캐시 데이터와 다르면 업데이트 후 리렌더링
+        if (cachedData !== docsString) {
+            localStorage.setItem(cacheKey, docsString);
+            await renderSavedGamesList(docs);
         }
 
-        savedGamesContainer.innerHTML = '';
-
-        const tabsContainer = document.createElement('div');
-        tabsContainer.style.display = 'flex';
-        tabsContainer.style.flexWrap = 'wrap';
-        tabsContainer.style.gap = '8px';
-        tabsContainer.style.marginBottom = '20px';
-        
-        const cardsContainer = document.createElement('div');
-        
-        savedGamesContainer.appendChild(tabsContainer);
-        savedGamesContainer.appendChild(cardsContainer);
-
-        let recordIndex = docs.length;
-        const tabs = [];
-        const cards = [];
-
-        for (const record of docs) {
-            const currentIdx = recordIndex--;
-            const drawNo = record.drawNo;
-            const dateStr = new Date(record.timestamp).toLocaleDateString('ko-KR');
-            
-            // 탭 버튼 생성
-            const tab = document.createElement('button');
-            tab.textContent = `${currentIdx}번 저장건`;
-            tab.style.padding = '6px 12px';
-            tab.style.borderRadius = '20px';
-            tab.style.border = '2px solid var(--primary-color)';
-            tab.style.background = 'transparent';
-            tab.style.color = 'var(--text-main)';
-            tab.style.cursor = 'pointer';
-            tab.style.fontWeight = '600';
-            tab.style.transition = 'all 0.2s ease';
-            
-            // 카드 내용 생성
-            const card = document.createElement('div');
-            card.className = 'saved-game-card';
-            card.style.display = 'none';
-            
-            // 당첨 결과 가져오기
-            const winData = await getWinningNumbers(drawNo);
-            
-            let gamesHtml = '';
-            record.games.forEach((gameObj, idx) => {
-                // 이전에 중첩 배열로 저장된 데이터가 있다면 배열 자체로, 새 데이터는 gameObj.numbers로
-                const gameNums = Array.isArray(gameObj) ? gameObj : gameObj.numbers;
-                const winResult = checkWinning(gameNums, winData);
-                
-                let ballsHtml = '';
-                gameNums.forEach(num => {
-                    // 당첨 번호에 포함되면 빛나게 처리
-                    const isWinNum = winData && winData.numbers.includes(num);
-                    const isBonus = winData && winData.bonus === num;
-                    const highlightStyle = isWinNum ? 'box-shadow: 0 0 10px yellow; border: 2px solid gold;' : (isBonus ? 'box-shadow: 0 0 10px red; border: 2px solid red;' : '');
-                    
-                    ballsHtml += `<div class="ball ${getColorClass(num)}" style="width: 32px; height: 32px; font-size: 0.85rem; ${highlightStyle}">${num}</div>`;
-                });
-
-                gamesHtml += `
-                    <div class="game-row" style="margin-bottom: 10px;">
-                        <div class="game-label" style="width: 50px; font-size: 0.9rem;">${idx+1}게임</div>
-                        <div class="lotto-balls" style="gap: 5px;">
-                            ${ballsHtml}
-                        </div>
-                        ${winResult.html}
-                    </div>
-                `;
-            });
-
-            const realWinHtml = winData ? `<div style="font-size: 0.85rem; color: var(--text-muted); text-align: center; margin-bottom: 15px; background: rgba(0,0,0,0.05); padding: 10px; border-radius: 8px;">이번 주 실제 당첨 번호: <strong style="color:var(--primary-color)">${winData.numbers.join(', ')} + ${winData.bonus}</strong></div>` : '';
-
-            card.innerHTML = `
-                <div class="saved-game-header">
-                    <span class="draw-badge">제 ${drawNo}회 추첨</span>
-                    <span style="color: var(--text-muted); font-size: 0.85rem;">저장일시: ${dateStr}</span>
-                </div>
-                ${realWinHtml}
-                <div class="saved-games-list">
-                    ${gamesHtml}
-                </div>
-                <div style="text-align: right; margin-top: 15px;">
-                    <button class="delete-record-btn" data-id="${record.id}" style="padding: 6px 12px; background: #ff4d4f; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.85rem;">이 내역 삭제하기</button>
-                </div>
-            `;
-            
-            // 삭제 버튼 이벤트
-            const deleteBtn = card.querySelector('.delete-record-btn');
-            deleteBtn.addEventListener('click', async () => {
-                if (confirm('이 저장 내역을 정말 삭제하시겠습니까?')) {
-                    try {
-                        const { db, doc, deleteDoc } = window.firebaseDB;
-                        await deleteDoc(doc(db, "saved_numbers", record.id));
-                        alert('삭제되었습니다.');
-                        // 화면에서 제거
-                        tab.remove();
-                        card.remove();
-                        // 탭이 지워졌으므로 첫 번째 탭 자동 클릭
-                        const remainingTabs = tabsContainer.querySelectorAll('button');
-                        if (remainingTabs.length > 0) remainingTabs[0].click();
-                        else savedGamesContainer.innerHTML = '<p style="text-align:center; padding: 40px; color: var(--text-muted);">저장된 내역이 없습니다.</p>';
-                        
-                        savedCount.textContent = \`(\${remainingTabs.length}건)\`;
-                    } catch (err) {
-                        console.error('삭제 오류:', err);
-                        alert('삭제 중 오류가 발생했습니다.');
-                    }
-                }
-            });
-
-            // 탭 클릭 이벤트
-            tab.addEventListener('click', () => {
-                tabs.forEach(t => { 
-                    t.style.background = 'transparent'; 
-                    t.style.color = 'var(--text-main)'; 
-                });
-                cards.forEach(c => c.style.display = 'none');
-                
-                tab.style.background = 'var(--primary-color)';
-                tab.style.color = 'white';
-                card.style.display = 'block';
-            });
-
-            tabsContainer.appendChild(tab);
-            cardsContainer.appendChild(card);
-            
-            tabs.push(tab);
-            cards.push(card);
-        }
-        
-        // 첫 번째 탭(가장 최근) 자동 클릭
-        if (tabs.length > 0) {
-            tabs[0].click();
-        }
+        loadingIndicator.style.display = 'none';
 
     } catch (e) {
         console.error(e);
