@@ -1028,11 +1028,14 @@ body {
 
     .nav {
         display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
+        flex-wrap: nowrap;
+        justify-content: flex-start;
         gap: 8px;
         margin-top: 15px;
         width: 100%;
+        overflow-x: auto;
+        padding-bottom: 5px;
+        -webkit-overflow-scrolling: touch;
     }
     .header .container {
         flex-direction: column;
@@ -1044,9 +1047,12 @@ body {
         border-left: none !important;
         padding-left: 0 !important;
         margin-left: 0 !important;
-        width: 100%;
-        justify-content: center;
-        margin-top: 5px;
+        display: flex;
+        align-items: center;
+        flex-shrink: 0;
+    }
+    .nav-btn, #authNavContainer span {
+        white-space: nowrap;
     }
 
     .action-box {
