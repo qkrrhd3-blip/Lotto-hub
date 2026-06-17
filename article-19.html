@@ -1,13 +1,13 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>K-평균 군집화(K-Means Clustering) 공간 분석 | Lotto hub</title>
-    <meta name="description" content="비지도 학습인 클러스터링을 통해 814만 개의 모든 로또 조합을 6차원 공간에서 그룹화하는 시각적 분석입니다.">
-    <meta name="keywords" content="로또, 로또 당첨번호, 로또 분석, 통계 분석, 인공지능 로또, 로또 칼럼, K-평균 군집화(K-Means Clustering) 공간 분석">
-    <meta property="og:title" content="K-평균 군집화(K-Means Clustering) 공간 분석 | Lotto hub">
-    <meta property="og:description" content="비지도 학습인 클러스터링을 통해 814만 개의 모든 로또 조합을 6차원 공간에서 그룹화하는 시각적 분석입니다.">
+    <title>K-?됯퇏 援곗쭛??K-Means Clustering) 怨듦컙 遺꾩꽍 | Lotto hub</title>
+    <meta name="description" content="鍮꾩????숈뒿???대윭?ㅽ꽣留곸쓣 ?듯빐 814留?媛쒖쓽 紐⑤뱺 濡쒕삉 議고빀??6李⑥썝 怨듦컙?먯꽌 洹몃９?뷀븯???쒓컖??遺꾩꽍?낅땲??">
+    <meta name="keywords" content="濡쒕삉, 濡쒕삉 ?뱀꺼踰덊샇, 濡쒕삉 遺꾩꽍, ?듦퀎 遺꾩꽍, ?멸났吏??濡쒕삉, 濡쒕삉 移쇰읆, K-?됯퇏 援곗쭛??K-Means Clustering) 怨듦컙 遺꾩꽍">
+    <meta property="og:title" content="K-?됯퇏 援곗쭛??K-Means Clustering) 怨듦컙 遺꾩꽍 | Lotto hub">
+    <meta property="og:description" content="鍮꾩????숈뒿???대윭?ㅽ꽣留곸쓣 ?듯빐 814留?媛쒖쓽 紐⑤뱺 濡쒕삉 議고빀??6李⑥썝 怨듦컙?먯꽌 洹몃９?뷀븯???쒓컖??遺꾩꽍?낅땲??">
     <meta property="og:image" content="https://lottomindai.com/icon.png">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://lottomindai.com/article-19.html">
@@ -21,86 +21,86 @@
                 <a href="index.html" style="text-decoration:none; color:inherit;">Lotto hub</a>
             </h1>
             <nav class="nav">
-                <a href="about.html" class="nav-btn">소개</a>
-                <a href="articles.html" class="nav-btn">로또 칼럼</a>
-                <a href="community.html" class="nav-btn">커뮤니티</a>
+                <a href="about.html" class="nav-btn">?뚭컻</a>
+                <a href="articles.html" class="nav-btn">濡쒕삉 移쇰읆</a>
+                <a href="community.html" class="nav-btn">而ㅻ??덊떚</a>
                 <div id="authNavContainer" style="display: flex; align-items: center; border-left: 1px solid var(--border-color); padding-left: 20px; margin-left: 10px;"></div>
             </nav>
         </div>
     </header>
 
     <main>
-    <!-- 애드센스 상단 광고 -->
+    <!-- ?좊뱶?쇱뒪 ?곷떒 愿묎퀬 -->
     <div class="adsense-container top">
-        <div class="adsense-placeholder">구글 애드센스 반응형 광고 (상단)</div>
+        <div class="adsense-placeholder">援ш? ?좊뱶?쇱뒪 諛섏쓳??愿묎퀬 (?곷떒)</div>
     </div>
 
         <section class="page-content" style="padding-top: 40px; line-height: 1.8;">
             <div class="article-body">
-                <span class="article-tag">데이터 마이닝</span>
-                <h1 style="font-size: 2.2rem; color: var(--text-main); margin-bottom: 20px; line-height: 1.3;">K-평균 군집화(K-Means Clustering) 공간 분석</h1>
-                <div class="article-meta" style="margin-bottom: 40px; border-bottom: 1px solid var(--border-color); padding-bottom: 20px; color: var(--text-muted);">작성자: Lotto hub 분석팀 | 작성일: 2026.05.24</div>
+                <span class="article-tag">?곗씠??留덉씠??/span>
+                <h1 style="font-size: 2.2rem; color: var(--text-main); margin-bottom: 20px; line-height: 1.3;">K-?됯퇏 援곗쭛??K-Means Clustering) 怨듦컙 遺꾩꽍</h1>
+                <div class="article-meta" style="margin-bottom: 40px; border-bottom: 1px solid var(--border-color); padding-bottom: 20px; color: var(--text-muted);">?묒꽦?? Lotto hub 遺꾩꽍? | ?묒꽦?? 2026.05.24</div>
                 
                 
-<h2>서론: 완벽한 무작위 속에 숨겨진 통계의 비밀</h2>
-<p>수많은 사람들이 매주 복권을 구매하며 일확천금의 꿈을 꿉니다. 그중에서도 814만 분의 1이라는 극악의 확률을 자랑하는 로또는 철저하게 독립 시행의 원칙을 따르는 완벽한 무작위 게임으로 알려져 있습니다. 과거에 어떤 번호가 나왔는지가 다음 회차에 수학적으로 직접적인 영향을 미치지 않는다는 것은 통계학의 기본 상식입니다.</p>
-<p>하지만 현대 빅데이터 분석과 인공지능 머신러닝의 발달은 우리에게 새로운 시각을 제공합니다. 그것은 바로 '절대 당첨 번호를 예측할 수 있다'는 거짓된 환상이 아니라, '통계적으로 절대로 나오지 않을 기형적인 번호 조합을 배제할 수 있다'는 과학적 접근법입니다. 1회차부터 수천 회차까지 누적된 거대한 데이터베이스는 대수의 법칙(Law of Large Numbers)에 따라 특정한 종 모양의 정규분포 곡선을 그리게 됩니다. 이번 칼럼에서는 이러한 데이터 기반의 논리적 접근이 어떻게 번호 선택의 효율성을 극대화하는지 심층적으로 탐구해 보겠습니다.</p>
-    <!-- 애드센스 중앙 광고 -->
+<h2>?쒕줎: ?꾨꼍??臾댁옉???띿뿉 ?④꺼吏??듦퀎??鍮꾨?</h2>
+<p>?섎쭖? ?щ엺?ㅼ씠 留ㅼ＜ 蹂듦텒??援щℓ?섎ŉ ?쇳솗泥쒓툑??轅덉쓣 轅됰땲?? 洹몄쨷?먯꽌??814留?遺꾩쓽 1?대씪??洹뱀븙???뺣쪧???먮옉?섎뒗 濡쒕삉??泥좎??섍쾶 ?낅┰ ?쒗뻾???먯튃???곕Ⅴ???꾨꼍??臾댁옉??寃뚯엫?쇰줈 ?뚮젮???덉뒿?덈떎. 怨쇨굅???대뼡 踰덊샇媛 ?섏솕?붿?媛 ?ㅼ쓬 ?뚯감???섑븰?곸쑝濡?吏곸젒?곸씤 ?곹뼢??誘몄튂吏 ?딅뒗?ㅻ뒗 寃껋? ?듦퀎?숈쓽 湲곕낯 ?곸떇?낅땲??</p>
+<p>?섏?留??꾨? 鍮낅뜲?댄꽣 遺꾩꽍怨??멸났吏??癒몄떊?щ떇??諛쒕떖? ?곕━?먭쾶 ?덈줈???쒓컖???쒓났?⑸땲?? 洹멸쾬? 諛붾줈 '?덈? ?뱀꺼 踰덊샇瑜??덉륫?????덈떎'??嫄곗쭞???섏긽???꾨땲?? '?듦퀎?곸쑝濡??덈?濡??섏삤吏 ?딆쓣 湲고삎?곸씤 踰덊샇 議고빀??諛곗젣?????덈떎'??怨쇳븰???묎렐踰뺤엯?덈떎. 1?뚯감遺???섏쿇 ?뚯감源뚯? ?꾩쟻??嫄곕????곗씠?곕쿋?댁뒪????섏쓽 踰뺤튃(Law of Large Numbers)???곕씪 ?뱀젙??醫?紐⑥뼇???뺢퇋遺꾪룷 怨≪꽑??洹몃━寃??⑸땲?? ?대쾲 移쇰읆?먯꽌???대윭???곗씠??湲곕컲???쇰━???묎렐???대뼸寃?踰덊샇 ?좏깮???⑥쑉?깆쓣 洹밸??뷀븯?붿? ?ъ링?곸쑝濡??먭뎄??蹂닿쿋?듬땲??</p>
+    <!-- ?좊뱶?쇱뒪 以묒븰 愿묎퀬 -->
     <div class="adsense-container center">
-        <div class="adsense-placeholder">구글 애드센스 반응형 광고 (중앙)</div>
+        <div class="adsense-placeholder">援ш? ?좊뱶?쇱뒪 諛섏쓳??愿묎퀬 (以묒븰)</div>
     </div>
 
-<h2>거리 기반 비지도 학습 클러스터링</h2>
-<p>K-평균 군집화는 정답이 없는 데이터들을 서로간의 유클리드 거리나 맨해튼 거리를 측정하여 가장 비슷한 특성을 가진 것들끼리 K개의 그룹으로 묶어버리는 대표적인 비지도 학습 데이터 마이닝 알고리즘입니다.</p>
-<h2>6차원 벡터 공간의 매핑</h2>
-<p>수학적으로 로또 번호 6개는 6차원 공간의 좌표로 변환(벡터화)할 수 있습니다. 814만 개의 모든 가능성을 이 가상의 공간에 뿌려 넣고 K-Means 알고리즘을 가동하면 무질서해 보이던 점들이 '간격이 좁은 군집', '초반에 쏠린 군집', '가장 이상적으로 분산된 군집' 등으로 뭉쳐지기 시작합니다.</p>
-<h2>안전 반경(Safe Radius) 추출 전략</h2>
-<p>AI 엔진은 이렇게 형성된 거대한 군집들 속에서, 과거 당첨 내역 데이터 좌표들이 유독 빽빽하게 모여 있는 '가장 밀도 높은 메인 클러스터'를 식별합니다. 이후 오직 해당 클러스터 반경 내에 존재하는 난수 좌표들만을 화면에 송출하여 통계적 타당성을 극대화합니다.</p>
-<h2>로또 분석 시스템의 구현 원리</h2>
-<p>Lotto hub의 인공지능 분석 엔진은 단순히 하나의 지표에만 의존하지 않습니다. 수십 대의 가상 서버가 백그라운드에서 동시에 수백만 번의 난수 시뮬레이션을 돌리며, 앞서 언급한 분석 기법을 비롯해 수십 가지의 통계적 허들을 세워둡니다. 무작위로 생성된 번호 배열은 이 가혹한 필터링 과정을 거치게 되며, 조건을 만족하지 못하는 불량 조합은 그 즉시 메모리에서 삭제됩니다.</p>
-<p>이러한 앙상블 기법을 통해 우리는 무한대에 가까운 814만 개의 경우의 수 중, 역사적 데이터가 증명하는 '가장 안정적이고 확률적으로 타당한' 최적의 교집합을 찾아냅니다. 이것이 바로 단순 자동이나 수동 선택과 차별화되는 데이터 마이닝 기반 추천 시스템의 진정한 가치입니다.</p>
-<h2>결론 및 요약</h2>
-<p>결론적으로, 아무리 뛰어난 수학자나 슈퍼컴퓨터라 할지라도 이번 주 당첨 번호 6개를 정확히 예측해내는 것은 불가능합니다. 로또는 본질적으로 운에 기댈 수밖에 없는 게임이기 때문입니다. 하지만 무의미하고 기형적인 숫자 조합을 거르고, 통계적 평균치에 수렴하는 합리적인 번호를 선택하는 것은 수학적으로 분명히 이점을 제공합니다.</p>
-<p>다양한 분석 기법들을 종합적으로 이해하고 이를 번호 생성에 참고한다면, 매주 결과를 기다리는 과정이 단순한 요행을 바라는 것을 넘어 하나의 흥미로운 데이터 과학 실험으로 다가올 것입니다. 항상 소액으로 건전하게 즐기시기를 권장하며, 데이터가 제시하는 새로운 확률의 세계를 경험해 보시기 바랍니다.</p>
+<h2>嫄곕━ 湲곕컲 鍮꾩????숈뒿 ?대윭?ㅽ꽣留?/h2>
+<p>K-?됯퇏 援곗쭛?붾뒗 ?뺣떟???녿뒗 ?곗씠?곕뱾???쒕줈媛꾩쓽 ?좏겢由щ뱶 嫄곕━??留⑦빐??嫄곕━瑜?痢≪젙?섏뿬 媛??鍮꾩듂???뱀꽦??媛吏?寃껊뱾?쇰━ K媛쒖쓽 洹몃９?쇰줈 臾띠뼱踰꾨━????쒖쟻??鍮꾩????숈뒿 ?곗씠??留덉씠???뚭퀬由ъ쬁?낅땲??</p>
+<h2>6李⑥썝 踰≫꽣 怨듦컙??留ㅽ븨</h2>
+<p>?섑븰?곸쑝濡?濡쒕삉 踰덊샇 6媛쒕뒗 6李⑥썝 怨듦컙??醫뚰몴濡?蹂??踰≫꽣???????덉뒿?덈떎. 814留?媛쒖쓽 紐⑤뱺 媛?μ꽦????媛?곸쓽 怨듦컙??肉뚮젮 ?ｊ퀬 K-Means ?뚭퀬由ъ쬁??媛?숉븯硫?臾댁쭏?쒗빐 蹂댁씠???먮뱾??'媛꾧꺽??醫곸? 援곗쭛', '珥덈컲???좊┛ 援곗쭛', '媛???댁긽?곸쑝濡?遺꾩궛??援곗쭛' ?깆쑝濡?萸됱퀜吏湲??쒖옉?⑸땲??</p>
+<h2>?덉쟾 諛섍꼍(Safe Radius) 異붿텧 ?꾨왂</h2>
+<p>AI ?붿쭊? ?대젃寃??뺤꽦??嫄곕???援곗쭛???띿뿉?? 怨쇨굅 ?뱀꺼 ?댁뿭 ?곗씠??醫뚰몴?ㅼ씠 ?좊룆 鍮쎈뭣?섍쾶 紐⑥뿬 ?덈뒗 '媛??諛???믪? 硫붿씤 ?대윭?ㅽ꽣'瑜??앸퀎?⑸땲?? ?댄썑 ?ㅼ쭅 ?대떦 ?대윭?ㅽ꽣 諛섍꼍 ?댁뿉 議댁옱?섎뒗 ?쒖닔 醫뚰몴?ㅻ쭔???붾㈃???≪텧?섏뿬 ?듦퀎????뱀꽦??洹밸??뷀빀?덈떎.</p>
+<h2>濡쒕삉 遺꾩꽍 ?쒖뒪?쒖쓽 援ы쁽 ?먮━</h2>
+<p>Lotto hub???멸났吏??遺꾩꽍 ?붿쭊? ?⑥닚???섎굹??吏?쒖뿉留??섏〈?섏? ?딆뒿?덈떎. ?섏떗 ???媛???쒕쾭媛 諛깃렇?쇱슫?쒖뿉???숈떆???섎갚留?踰덉쓽 ?쒖닔 ?쒕??덉씠?섏쓣 ?뚮━硫? ?욎꽌 ?멸툒??遺꾩꽍 湲곕쾿??鍮꾨’???섏떗 媛吏???듦퀎???덈뱾???몄썙?〓땲?? 臾댁옉?꾨줈 ?앹꽦??踰덊샇 諛곗뿴? ??媛?뱁븳 ?꾪꽣留?怨쇱젙??嫄곗튂寃??섎ŉ, 議곌굔??留뚯”?섏? 紐삵븯??遺덈웾 議고빀? 洹?利됱떆 硫붾え由ъ뿉????젣?⑸땲??</p>
+<p>?대윭???숈긽釉?湲곕쾿???듯빐 ?곕━??臾댄븳???媛源뚯슫 814留?媛쒖쓽 寃쎌슦????以? ??궗???곗씠?곌? 利앸챸?섎뒗 '媛???덉젙?곸씠怨??뺣쪧?곸쑝濡???뱁븳' 理쒖쟻??援먯쭛?⑹쓣 李얠븘?낅땲?? ?닿쾬??諛붾줈 ?⑥닚 ?먮룞?대굹 ?섎룞 ?좏깮怨?李⑤퀎?붾릺???곗씠??留덉씠??湲곕컲 異붿쿇 ?쒖뒪?쒖쓽 吏꾩젙??媛移섏엯?덈떎.</p>
+<h2>寃곕줎 諛??붿빟</h2>
+<p>寃곕줎?곸쑝濡? ?꾨Т由??곗뼱???섑븰?먮굹 ?덊띁而댄벂?곕씪 ?좎??쇰룄 ?대쾲 二??뱀꺼 踰덊샇 6媛쒕? ?뺥솗???덉륫?대궡??寃껋? 遺덇??ν빀?덈떎. 濡쒕삉??蹂몄쭏?곸쑝濡??댁뿉 湲곕뙂 ?섎컰???녿뒗 寃뚯엫?닿린 ?뚮Ц?낅땲?? ?섏?留?臾댁쓽誘명븯怨?湲고삎?곸씤 ?レ옄 議고빀??嫄곕Ⅴ怨? ?듦퀎???됯퇏移섏뿉 ?섎졃?섎뒗 ?⑸━?곸씤 踰덊샇瑜??좏깮?섎뒗 寃껋? ?섑븰?곸쑝濡?遺꾨챸???댁젏???쒓났?⑸땲??</p>
+<p>?ㅼ뼇??遺꾩꽍 湲곕쾿?ㅼ쓣 醫낇빀?곸쑝濡??댄빐?섍퀬 ?대? 踰덊샇 ?앹꽦??李멸퀬?쒕떎硫? 留ㅼ＜ 寃곌낵瑜?湲곕떎由щ뒗 怨쇱젙???⑥닚???뷀뻾??諛붾씪??寃껋쓣 ?섏뼱 ?섎굹???λ?濡쒖슫 ?곗씠??怨쇳븰 ?ㅽ뿕?쇰줈 ?ㅺ???寃껋엯?덈떎. ??긽 ?뚯븸?쇰줈 嫄댁쟾?섍쾶 利먭린?쒓린瑜?沅뚯옣?섎ŉ, ?곗씠?곌? ?쒖떆?섎뒗 ?덈줈???뺣쪧???멸퀎瑜?寃쏀뿕??蹂댁떆湲?諛붾엻?덈떎.</p>
                 <div class="article-hashtags" style="margin-top: 50px; padding-top: 20px; border-top: 1px dashed var(--border-color); display: flex; gap: 10px; flex-wrap: wrap;">
-                    <span style="background: #f1f5f9; color: var(--primary-color); padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">#로또</span>
-                    <span style="background: #f1f5f9; color: var(--primary-color); padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">#당첨번호</span>
-                    <span style="background: #f1f5f9; color: var(--primary-color); padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">#데이터 마이닝</span>
-                    <span style="background: #f1f5f9; color: var(--primary-color); padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">#통계분석</span>
-                    <span style="background: #f1f5f9; color: var(--primary-color); padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">#인공지능</span>
+                    <span style="background: #f1f5f9; color: var(--primary-color); padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">#濡쒕삉</span>
+                    <span style="background: #f1f5f9; color: var(--primary-color); padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">#?뱀꺼踰덊샇</span>
+                    <span style="background: #f1f5f9; color: var(--primary-color); padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">#?곗씠??留덉씠??/span>
+                    <span style="background: #f1f5f9; color: var(--primary-color); padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">#?듦퀎遺꾩꽍</span>
+                    <span style="background: #f1f5f9; color: var(--primary-color); padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">#?멸났吏??/span>
                 </div>
             </div>
         </section>
     
-    <!-- 애드센스 하단 광고 -->
+    <!-- ?좊뱶?쇱뒪 ?섎떒 愿묎퀬 -->
     <div class="adsense-container bottom">
-        <div class="adsense-placeholder">구글 애드센스 반응형 광고 (하단)</div>
+        <div class="adsense-placeholder">援ш? ?좊뱶?쇱뒪 諛섏쓳??愿묎퀬 (?섎떒)</div>
     </div>
 </main>
 
     <footer class="footer">
         <div class="container">
             <div class="footer-links">
-                <a href="terms.html">이용약관</a>
+                <a href="terms.html">?댁슜?쎄?</a>
                 <span class="divider">|</span>
-                <a href="privacy.html">개인정보처리방침</a>
+                <a href="privacy.html">媛쒖씤?뺣낫泥섎━諛⑹묠</a>
             </div>
             <p class="disclaimer" style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px; line-height: 1.5; padding: 0 15px; word-break: keep-all;">
-                <strong>면책 조항:</strong> Lotto hub에서 제공하는 모든 분석 정보 및 번호는 통계 및 AI 모델에 기반한 참고 자료일 뿐, 로또 당첨을 완벽하게 보장하지 않습니다. 복권 구매의 최종 책임은 사용자 본인에게 있으며, 무리한 구매는 금전적 손실을 초래할 수 있습니다. 소액으로 건전하게 즐기시기를 권장합니다.
+                <strong>硫댁콉 議고빆:</strong> Lotto hub?먯꽌 ?쒓났?섎뒗 紐⑤뱺 遺꾩꽍 ?뺣낫 諛?踰덊샇???듦퀎 諛?AI 紐⑤뜽??湲곕컲??李멸퀬 ?먮즺??肉? 濡쒕삉 ?뱀꺼???꾨꼍?섍쾶 蹂댁옣?섏? ?딆뒿?덈떎. 蹂듦텒 援щℓ??理쒖쥌 梨낆엫? ?ъ슜??蹂몄씤?먭쾶 ?덉쑝硫? 臾대━??援щℓ??湲덉쟾???먯떎??珥덈옒?????덉뒿?덈떎. ?뚯븸?쇰줈 嫄댁쟾?섍쾶 利먭린?쒓린瑜?沅뚯옣?⑸땲??
             </p>
             <p>&copy; 2026 Lotto hub. All rights reserved.</p>
         </div>
     </footer>
     <script src="auth.js"></script>
 
-    <!-- 애드센스 좌우 사이드바 광고 -->
+    <!-- ?좊뱶?쇱뒪 醫뚯슦 ?ъ씠?쒕컮 愿묎퀬 -->
         <div class="adsense-sidebar left">
-        <div class="adsense-placeholder vertical" id="googleAdLeft">구글 자동 광고 (좌)</div>
-        <div id="customAdLeftSlot" class="custom-ad-container">수동 커스텀 광고 영역 (좌)</div>
+        <div class="adsense-placeholder vertical" id="googleAdLeft">援ш? ?먮룞 愿묎퀬 (醫?</div>
+        <div id="customAdLeftSlot" class="custom-ad-container">?섎룞 而ㅼ뒪? 愿묎퀬 ?곸뿭 (醫?</div>
     </div>
         <div class="adsense-sidebar right">
-        <div class="adsense-placeholder vertical" id="googleAdRight">구글 자동 광고 (우)</div>
-        <div id="customAdRightSlot" class="custom-ad-container">수동 커스텀 광고 영역 (우)</div>
+        <div class="adsense-placeholder vertical" id="googleAdRight">援ш? ?먮룞 愿묎퀬 (??</div>
+        <div id="customAdRightSlot" class="custom-ad-container">?섎룞 而ㅼ뒪? 愿묎퀬 ?곸뿭 (??</div>
     </div>
 
     <script>

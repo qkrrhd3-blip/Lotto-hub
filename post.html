@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>게시글 보기 | Lotto hub</title>
-    <meta name="description" content="Lotto hub 커뮤니티 게시글입니다.">
+    <title>寃뚯떆湲 蹂닿린 | Lotto hub</title>
+    <meta name="description" content="Lotto hub 而ㅻ??덊떚 寃뚯떆湲?낅땲??">
     <link rel="icon" href="icon.png">
     <link rel="apple-touch-icon" href="icon.png">
     <link rel="stylesheet" href="style.css">
@@ -96,9 +96,9 @@
                 <a href="index.html" style="text-decoration:none; color:inherit;">Lotto hub</a>
             </h1>
             <nav class="nav">
-                <a href="about.html" class="nav-btn">소개</a>
-                <a href="articles.html" class="nav-btn">로또 칼럼</a>
-                <a href="community.html" class="nav-btn">커뮤니티</a>
+                <a href="about.html" class="nav-btn">?뚭컻</a>
+                <a href="articles.html" class="nav-btn">濡쒕삉 移쇰읆</a>
+                <a href="community.html" class="nav-btn">而ㅻ??덊떚</a>
                 <div id="authNavContainer" style="display: flex; align-items: center; border-left: 1px solid var(--border-color); padding-left: 20px; margin-left: 10px;"></div>
             </nav>
         </div>
@@ -106,36 +106,36 @@
 
     <main>
         <div class="adsense-container top">
-            <div class="adsense-placeholder">구글 애드센스 반응형 광고 (상단)</div>
+            <div class="adsense-placeholder">援ш? ?좊뱶?쇱뒪 諛섏쓳??愿묎퀬 (?곷떒)</div>
         </div>
 
         <section class="page-content">
             <div class="container">
                 <div class="post-container" id="postContainer">
                     <div style="text-align:center; padding: 50px;">
-                        <p>게시글을 불러오는 중입니다...</p>
+                        <p>寃뚯떆湲??遺덈윭?ㅻ뒗 以묒엯?덈떎...</p>
                     </div>
                 </div>
             </div>
         </section>
 
         <div class="adsense-container bottom">
-            <div class="adsense-placeholder">구글 애드센스 반응형 광고 (하단)</div>
+            <div class="adsense-placeholder">援ш? ?좊뱶?쇱뒪 諛섏쓳??愿묎퀬 (?섎떒)</div>
         </div>
     </main>
 
     <footer class="footer">
         <div class="container">
             <div class="footer-links">
-                <a href="terms.html">이용약관</a>
+                <a href="terms.html">?댁슜?쎄?</a>
                 <span class="divider">|</span>
-                <a href="privacy.html">개인정보처리방침</a>
+                <a href="privacy.html">媛쒖씤?뺣낫泥섎━諛⑹묠</a>
             </div>
             <p>&copy; 2026 Lotto hub. All rights reserved.</p>
         </div>
     </footer>
 
-    <script src="auth.js?v=18"></script>
+    <script src="auth.js?v=6"></script>
     <script type="module" src="db.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -144,7 +144,7 @@
             const container = document.getElementById('postContainer');
 
             if (!postId) {
-                container.innerHTML = `<div style="text-align:center; padding:50px;"><h3>잘못된 접근입니다.</h3><a href="community.html" class="back-btn">목록으로 돌아가기</a></div>`;
+                container.innerHTML = `<div style="text-align:center; padding:50px;"><h3>?섎せ???묎렐?낅땲??</h3><a href="community.html" class="back-btn">紐⑸줉?쇰줈 ?뚯븘媛湲?/a></div>`;
                 return;
             }
 
@@ -159,9 +159,9 @@
             if (!post) {
                 // If it's an auto-generated post, it might not be in localStorage.
                 if (postId.startsWith('auto-')) {
-                    container.innerHTML = `<div style="text-align:center; padding:50px;"><h3>자동 분석 게시글은 커뮤니티 메인에서 바로 확인 가능합니다.</h3><a href="community.html" class="back-btn">목록으로 돌아가기</a></div>`;
+                    container.innerHTML = `<div style="text-align:center; padding:50px;"><h3>?먮룞 遺꾩꽍 寃뚯떆湲? 而ㅻ??덊떚 硫붿씤?먯꽌 諛붾줈 ?뺤씤 媛?ν빀?덈떎.</h3><a href="community.html" class="back-btn">紐⑸줉?쇰줈 ?뚯븘媛湲?/a></div>`;
                 } else {
-                    container.innerHTML = `<div style="text-align:center; padding:50px;"><h3>존재하지 않거나 삭제된 게시글입니다.</h3><a href="community.html" class="back-btn">목록으로 돌아가기</a></div>`;
+                    container.innerHTML = `<div style="text-align:center; padding:50px;"><h3>議댁옱?섏? ?딄굅????젣??寃뚯떆湲?낅땲??</h3><a href="community.html" class="back-btn">紐⑸줉?쇰줈 ?뚯븘媛湲?/a></div>`;
                 }
                 return;
             }
@@ -170,14 +170,14 @@
             let contentHtml = post.content.replace(/\n/g, '<br>');
             let imageHtml = '';
             if (post.image) {
-                imageHtml = `<img src="${post.image}" class="post-image" alt="첨부 이미지">`;
+                imageHtml = `<img src="${post.image}" class="post-image" alt="泥⑤? ?대?吏">`;
             }
 
             container.innerHTML = `
                 <div class="post-header">
                     <h2 class="post-title">${post.title}</h2>
                     <div class="post-meta">
-                        작성자: <strong>${post.author}</strong> &nbsp;|&nbsp; 작성일: ${post.date}
+                        ?묒꽦?? <strong>${post.author}</strong> &nbsp;|&nbsp; ?묒꽦?? ${post.date}
                     </div>
                 </div>
                 <div class="post-body">
@@ -185,23 +185,23 @@
                     ${imageHtml ? `<div style="margin-top:20px; text-align:center;">${imageHtml}</div>` : ''}
                 </div>
                 <div style="text-align: center; margin-top: 40px;">
-                    <a href="community.html" class="back-btn">목록으로 돌아가기</a>
-                    <button id="deletePostBtn" class="delete-btn">게시글 삭제</button>
+                    <a href="community.html" class="back-btn">紐⑸줉?쇰줈 ?뚯븘媛湲?/a>
+                    <button id="deletePostBtn" class="delete-btn">寃뚯떆湲 ??젣</button>
                 </div>
             `;
             
             // Set document title
-            document.title = `${post.title} | Lotto hub 커뮤니티`;
+            document.title = `${post.title} | Lotto hub 而ㅻ??덊떚`;
 
             // Delete logic
             const deleteBtn = document.getElementById('deletePostBtn');
             if (deleteBtn) {
                 deleteBtn.addEventListener('click', () => {
-                    if (confirm('정말로 이 게시글을 삭제하시겠습니까? 삭제된 글은 복구할 수 없습니다.')) {
+                    if (confirm('?뺣쭚濡???寃뚯떆湲????젣?섏떆寃좎뒿?덇퉴? ??젣??湲? 蹂듦뎄?????놁뒿?덈떎.')) {
                         // Remove from localStorage
                         let updatedPosts = posts.filter(p => p.id.toString() !== postId);
                         localStorage.setItem('lotto_hub_posts', JSON.stringify(updatedPosts));
-                        alert('게시글이 성공적으로 삭제되었습니다.');
+                        alert('寃뚯떆湲???깃났?곸쑝濡???젣?섏뿀?듬땲??');
                         window.location.href = 'community.html';
                     }
                 });

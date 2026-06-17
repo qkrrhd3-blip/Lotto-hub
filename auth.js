@@ -59,6 +59,31 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // 간단한 비밀번호 양방향 암호화/복호화 함수 (Base64 + XOR)
+    const SECRET_KEY = "lottohub_secure_key_2026";
+    
+    function encryptPassword(pwd) {
+        let encrypted = "";
+        for (let i = 0; i < pwd.length; i++) {
+            encrypted += String.fromCharCode(pwd.charCodeAt(i) ^ SECRET_KEY.charCodeAt(i % SECRET_KEY.length));
+        }
+        return "ENC_" + btoa(encrypted);
+    }
+    
+    function decryptPassword(stored) {
+        if (!stored || !stored.startsWith("ENC_")) return stored; // 기존 평문 비밀번호 호환
+        try {
+            let decoded = atob(stored.substring(4));
+            let decrypted = "";
+            for (let i = 0; i < decoded.length; i++) {
+                decrypted += String.fromCharCode(decoded.charCodeAt(i) ^ SECRET_KEY.charCodeAt(i % SECRET_KEY.length));
+            }
+            return decrypted;
+        } catch (e) {
+            return stored;
+        }
+    }
+
     // Login Logic
     const loginForm = document.getElementById('loginForm');
     if (loginForm) {
@@ -68,7 +93,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const password = document.getElementById('loginPassword').value;
 
             const users = JSON.parse(localStorage.getItem('lotto_hub_users')) || [];
-            const user = users.find(u => u.email === email && u.password === password);
+            // 복호화해서 비교
+            const user = users.find(u => u.email === email && decryptPassword(u.password) === password);
 
             if (user) {
                 localStorage.setItem('lotto_hub_current_user', JSON.stringify({ email: user.email }));
@@ -88,7 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const users = JSON.parse(localStorage.getItem('lotto_hub_users')) || [];
                     const foundUser = users.find(u => u.email === emailInput.trim());
                     if (foundUser) {
-                        alert(`회원님의 비밀번호는 [ ${foundUser.password} ] 입니다.\n확인 후 다시 로그인해 주세요.`);
+                        alert(`회원님의 비밀번호는 [ ${decryptPassword(foundUser.password)} ] 입니다.\n확인 후 다시 로그인해 주세요.`);
                     } else {
                         alert('해당 이메일로 가입된 계정을 찾을 수 없습니다.');
                     }
@@ -118,7 +144,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            users.push({ email, password });
+            users.push({ email, password: encryptPassword(password) });
             localStorage.setItem('lotto_hub_users', JSON.stringify(users));
             
             // Auto login after signup
