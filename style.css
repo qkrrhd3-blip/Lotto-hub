@@ -1078,6 +1078,18 @@ body {
         flex-wrap: nowrap !important;
         justify-content: center !important;
     }
+    .game-row {
+        flex-wrap: nowrap !important;
+        justify-content: center !important;
+        gap: 5px !important;
+    }
+    .game-label {
+        width: auto !important;
+        min-width: 45px;
+        margin-right: 5px !important;
+        font-size: 0.9rem !important;
+        justify-content: flex-start !important;
+    }
     /* 플러스 기호 크기도 맞춤 조절 */
     #mainHeroBallsContainer > div[style*="font-size"] {
         font-size: 1.1rem !important;
