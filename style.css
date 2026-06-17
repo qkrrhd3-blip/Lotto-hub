@@ -1068,13 +1068,15 @@ body {
         word-break: keep-all;
     }
     .ball {
-        width: 38px !important;
-        height: 38px !important;
-        font-size: 0.9rem !important;
+        width: 34px !important;
+        height: 34px !important;
+        font-size: 0.85rem !important;
         border-width: 1px !important;
     }
     .lotto-balls {
-        gap: 6px !important;
+        gap: 4px !important;
+        flex-wrap: nowrap !important;
+        justify-content: center !important;
     }
     /* 플러스 기호 크기도 맞춤 조절 */
     #mainHeroBallsContainer > div[style*="font-size"] {
