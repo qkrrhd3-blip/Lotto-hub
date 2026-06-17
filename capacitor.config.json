@@ -1,0 +1,13 @@
+{
+  "appId": "com.hxahub.lotto",
+  "appName": "로또허브",
+  "webDir": "www",
+  "bundledWebRuntime": false,
+  "server": {
+    "url": "https://hxahub.com",
+    "cleartext": true,
+    "allowNavigation": [
+      "hxahub.com"
+    ]
+  }
+}
