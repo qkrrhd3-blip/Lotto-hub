@@ -41,9 +41,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // Update Navigation UI
     if (authNavContainer) {
         if (currentUser) {
+            const displayName = currentUser.nickname ? currentUser.nickname : currentUser.email;
             authNavContainer.innerHTML = `
                 <a href="mypage.html" class="nav-btn" style="color: var(--primary-color); font-weight: bold;">마이페이지</a>
-                <span style="color: var(--text-muted); margin-right: 15px; margin-left: 15px; font-size: 0.9rem;">${currentUser.email}님</span>
+                <span style="color: var(--text-muted); margin-right: 15px; margin-left: 15px; font-size: 0.9rem;">${displayName}님</span>
                 <a href="#" id="logoutBtn" class="nav-btn" style="border: 1px solid var(--border-color);">로그아웃</a>
             `;
 
@@ -97,7 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const user = users.find(u => u.email === email && decryptPassword(u.password) === password);
 
             if (user) {
-                localStorage.setItem('lotto_hub_current_user', JSON.stringify({ email: user.email }));
+                localStorage.setItem('lotto_hub_current_user', JSON.stringify({ email: user.email, nickname: user.nickname }));
                 window.location.href = 'index.html';
             } else {
                 alert('이메일 또는 비밀번호가 일치하지 않습니다.');
@@ -129,6 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
         signupForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const email = document.getElementById('signupEmail').value.trim();
+            const nickname = document.getElementById('signupNickname').value.trim();
             const password = document.getElementById('signupPassword').value;
             const passwordConfirm = document.getElementById('signupPasswordConfirm').value;
 
@@ -143,12 +145,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 alert('이미 가입된 이메일입니다.');
                 return;
             }
+            
+            if (users.find(u => u.nickname === nickname)) {
+                alert('이미 사용중입니다.');
+                return;
+            }
 
-            users.push({ email, password: encryptPassword(password) });
+            users.push({ email, nickname, password: encryptPassword(password) });
             localStorage.setItem('lotto_hub_users', JSON.stringify(users));
             
             // Auto login after signup
-            localStorage.setItem('lotto_hub_current_user', JSON.stringify({ email }));
+            localStorage.setItem('lotto_hub_current_user', JSON.stringify({ email, nickname }));
             alert('회원가입이 완료되었습니다!');
             window.location.href = 'index.html';
         });
