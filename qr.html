@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR코드 당첨 확인 | Lotto hub</title>
+    <meta name="description" content="스마트폰 카메라로 로또 용지의 QR코드를 스캔하여 1초 만에 당첨 결과를 확인하세요.">
+    <link rel="icon" href="icon.png">
+    <link rel="stylesheet" href="style.css?v=21">
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    <style>
+        .qr-header {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow-sm);
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+        #reader {
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            border: 2px solid var(--primary-color);
+            background: #000;
+        }
+        #result-container {
+            display: none;
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-color);
+            animation: fadeIn 0.5s ease-out;
+        }
+        .result-game {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .result-game:last-child {
+            border-bottom: none;
+        }
+        .number-ball {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            margin: 0 3px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: #fff;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+            box-shadow: inset -2px -2px 4px rgba(0,0,0,0.2), 1px 1px 3px rgba(0,0,0,0.3);
+        }
+        .ball-matched {
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.8), inset -2px -2px 4px rgba(0,0,0,0.2);
+            transform: scale(1.1);
+            z-index: 10;
+        }
+        .badge {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+        .win-badge-1 { background: #ffd700; color: #000; box-shadow: 0 0 10px rgba(255, 215, 0, 0.5); }
+        .win-badge-2 { background: #c0c0c0; color: #000; }
+        .win-badge-3 { background: #cd7f32; color: #fff; }
+        .win-badge-4 { background: #4caf50; color: #fff; }
+        .win-badge-5 { background: #2196f3; color: #fff; }
+        .win-badge-none { background: var(--border-color); color: var(--text-muted); }
+        .win-badge-wait { background: #9c27b0; color: #fff; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .firework {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 100px;
+            pointer-events: none;
+            z-index: 9999;
+            animation: popOut 1.5s forwards;
+        }
+        
+        @keyframes popOut {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 1; }
+            50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(1.5); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1 class="logo" style="display: flex; align-items: center; gap: 10px;">
+                <img src="icon.png" alt="Lotto hub" style="width: 36px; height: 36px; border-radius: 6px;">
+                <a href="index.html" style="text-decoration:none; color:inherit;">Lotto hub</a>
+            </h1>
+            <nav class="nav">
+                <a href="qr.html" class="nav-btn primary">QR 스캔</a>
+                <a href="about.html" class="nav-btn">소개</a>
+                <a href="articles.html" class="nav-btn">로또 칼럼</a>
+                <a href="community.html" class="nav-btn">커뮤니티</a>
+                <div id="authNavContainer" style="display: flex; align-items: center; border-left: 1px solid var(--border-color); padding-left: 20px; margin-left: 10px;"></div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container" style="max-width: 800px; min-height: 70vh;">
+        <div class="qr-header">
+            <h2 style="margin-top:0; color: var(--primary-color);">📷 QR코드 당첨 확인</h2>
+            <p style="color: var(--text-muted); font-size: 0.95rem;">가지고 계신 로또 용지 우측 상단의 QR코드를 사각형 안에 맞춰주세요.</p>
+        </div>
+
+        <div id="reader-container" style="text-align: center;">
+            <div id="reader"></div>
+            <button id="rescanBtn" class="btn-primary" style="display: none; margin: 20px auto;">다시 스캔하기</button>
+        </div>
+
+        <div id="result-container">
+            <div id="result-header" style="text-align: center; border-bottom: 2px solid var(--primary-color); padding-bottom: 15px; margin-bottom: 20px;">
+                <h3 id="draw-info" style="margin: 0; font-size: 1.5rem; color: var(--text-main);">결과 확인 중...</h3>
+                <p id="draw-date" style="margin: 5px 0 0 0; color: var(--text-muted);"></p>
+            </div>
+            
+            <div id="winning-numbers-box" style="text-align: center; margin-bottom: 25px; padding: 15px; background: #f8fafc; border-radius: 8px;">
+                <p style="margin: 0 0 10px 0; font-weight: bold; color: var(--text-main);">이번 회차 당첨 번호</p>
+                <div id="actual-winning-numbers"></div>
+            </div>
+
+            <div id="my-games-container">
+                <!-- 스캔한 내 번호 결과들 -->
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-links">
+                <a href="terms.html">이용약관</a>
+                <span class="divider">|</span>
+                <a href="privacy.html">개인정보처리방침</a>
+            </div>
+            <p>&copy; 2026 Lotto hub. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="auth.js?v=7"></script>
+    <script type="module" src="db.js?v=2"></script>
+    <script type="module" src="qr.js?v=1"></script>
+</body>
+</html>
