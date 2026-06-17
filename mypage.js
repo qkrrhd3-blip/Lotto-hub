@@ -158,15 +158,45 @@ async function loadSavedGames() {
 
         savedGamesContainer.innerHTML = '';
 
+        const tabsContainer = document.createElement('div');
+        tabsContainer.style.display = 'flex';
+        tabsContainer.style.flexWrap = 'wrap';
+        tabsContainer.style.gap = '8px';
+        tabsContainer.style.marginBottom = '20px';
+        
+        const cardsContainer = document.createElement('div');
+        
+        savedGamesContainer.appendChild(tabsContainer);
+        savedGamesContainer.appendChild(cardsContainer);
+
+        let recordIndex = docs.length;
+        const tabs = [];
+        const cards = [];
+
         for (const record of docs) {
+            const currentIdx = recordIndex--;
             const drawNo = record.drawNo;
             const dateStr = new Date(record.timestamp).toLocaleDateString('ko-KR');
             
-            // 당첨 결과 가져오기
-            const winData = await getWinningNumbers(drawNo);
+            // 탭 버튼 생성
+            const tab = document.createElement('button');
+            tab.textContent = `${currentIdx}번 저장건`;
+            tab.style.padding = '6px 12px';
+            tab.style.borderRadius = '20px';
+            tab.style.border = '2px solid var(--primary-color)';
+            tab.style.background = 'transparent';
+            tab.style.color = 'var(--text-main)';
+            tab.style.cursor = 'pointer';
+            tab.style.fontWeight = '600';
+            tab.style.transition = 'all 0.2s ease';
             
+            // 카드 내용 생성
             const card = document.createElement('div');
             card.className = 'saved-game-card';
+            card.style.display = 'none';
+            
+            // 당첨 결과 가져오기
+            const winData = await getWinningNumbers(drawNo);
             
             let gamesHtml = '';
             record.games.forEach((gameObj, idx) => {
@@ -207,7 +237,30 @@ async function loadSavedGames() {
                     ${gamesHtml}
                 </div>
             `;
-            savedGamesContainer.appendChild(card);
+            
+            // 탭 클릭 이벤트
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => { 
+                    t.style.background = 'transparent'; 
+                    t.style.color = 'var(--text-main)'; 
+                });
+                cards.forEach(c => c.style.display = 'none');
+                
+                tab.style.background = 'var(--primary-color)';
+                tab.style.color = 'white';
+                card.style.display = 'block';
+            });
+
+            tabsContainer.appendChild(tab);
+            cardsContainer.appendChild(card);
+            
+            tabs.push(tab);
+            cards.push(card);
+        }
+        
+        // 첫 번째 탭(가장 최근) 자동 클릭
+        if (tabs.length > 0) {
+            tabs[0].click();
         }
 
     } catch (e) {
