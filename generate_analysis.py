@@ -1,6 +1,8 @@
 import os
 import json
 import urllib.request
+import urllib.parse
+import ssl
 from datetime import datetime, timedelta
 import random
 
@@ -177,7 +179,6 @@ def get_color(num):
 
 def fetch_lotto_data(draw_num):
     url = f"https://www.dhlottery.co.kr/common.do?method=getLottoNumber&drwNo={draw_num}"
-    import ssl
     ctx = ssl.create_default_context()
     ctx.check_hostname = False
     ctx.verify_mode = ssl.CERT_NONE
@@ -191,7 +192,6 @@ def fetch_lotto_data(draw_num):
     except Exception as e:
         print(f"Direct fetch error {draw_num}: {e}")
         try:
-            import urllib.parse
             proxy_url = "https://api.allorigins.win/get?url=" + urllib.parse.quote(url)
             req = urllib.request.Request(proxy_url, headers={'User-Agent': 'Mozilla/5.0'})
             with urllib.request.urlopen(req, timeout=10, context=ctx) as response:
@@ -201,6 +201,15 @@ def fetch_lotto_data(draw_num):
                     return actual_data
         except Exception as e2:
             print(f"Proxy fetch error {draw_num}: {e2}")
+            try:
+                cors_url = "https://corsproxy.io/?" + urllib.parse.quote(url)
+                req = urllib.request.Request(cors_url, headers={'User-Agent': 'Mozilla/5.0'})
+                with urllib.request.urlopen(req, timeout=10, context=ctx) as response:
+                    data = json.loads(response.read().decode('utf-8'))
+                    if data.get('returnValue') == 'success':
+                        return data
+            except Exception as e3:
+                print(f"Corsproxy fetch error {draw_num}: {e3}")
     return None
 
 def get_latest_draw_number():
