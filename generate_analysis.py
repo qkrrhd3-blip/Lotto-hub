@@ -5,6 +5,7 @@ import urllib.parse
 import ssl
 from datetime import datetime, timedelta
 import random
+import time
 
 html_template = """<!DOCTYPE html>
 <html lang="ko">
@@ -182,34 +183,33 @@ def fetch_lotto_data(draw_num):
     ctx = ssl.create_default_context()
     ctx.check_hostname = False
     ctx.verify_mode = ssl.CERT_NONE
+    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'}
     
-    try:
-        req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
-        with urllib.request.urlopen(req, timeout=10, context=ctx) as response:
-            data = json.loads(response.read().decode('utf-8'))
-            if data.get('returnValue') == 'success':
-                return data
-    except Exception as e:
-        print(f"Direct fetch error {draw_num}: {e}")
+    proxies = [
+        "",
+        "https://api.allorigins.win/raw?url=",
+        "https://api.codetabs.com/v1/proxy/?quest=",
+        "https://thingproxy.freeboard.io/fetch/"
+    ]
+    
+    for proxy in proxies:
         try:
-            proxy_url = "https://api.allorigins.win/get?url=" + urllib.parse.quote(url)
-            req = urllib.request.Request(proxy_url, headers={'User-Agent': 'Mozilla/5.0'})
+            if proxy == "":
+                target_url = url
+            else:
+                target_url = proxy + urllib.parse.quote(url)
+                
+            req = urllib.request.Request(target_url, headers=headers)
             with urllib.request.urlopen(req, timeout=10, context=ctx) as response:
-                proxy_data = json.loads(response.read().decode('utf-8'))
-                actual_data = json.loads(proxy_data['contents'])
-                if actual_data.get('returnValue') == 'success':
-                    return actual_data
-        except Exception as e2:
-            print(f"Proxy fetch error {draw_num}: {e2}")
-            try:
-                cors_url = "https://corsproxy.io/?" + urllib.parse.quote(url)
-                req = urllib.request.Request(cors_url, headers={'User-Agent': 'Mozilla/5.0'})
-                with urllib.request.urlopen(req, timeout=10, context=ctx) as response:
-                    data = json.loads(response.read().decode('utf-8'))
-                    if data.get('returnValue') == 'success':
-                        return data
-            except Exception as e3:
-                print(f"Corsproxy fetch error {draw_num}: {e3}")
+                raw_data = response.read().decode('utf-8')
+                data = json.loads(raw_data)
+                if data.get('returnValue') == 'success':
+                    return data
+        except Exception as e:
+            print(f"Fetch failed with {proxy if proxy else 'Direct'}: {e}")
+            time.sleep(1)
+            continue
+            
     return None
 
 def get_latest_draw_number():
