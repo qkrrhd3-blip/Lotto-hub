@@ -88,36 +88,72 @@ document.addEventListener('DOMContentLoaded', () => {
     // Login Logic
     const loginForm = document.getElementById('loginForm');
     if (loginForm) {
-        loginForm.addEventListener('submit', (e) => {
+        loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const email = document.getElementById('loginEmail').value.trim();
+            if (!window.firebaseDB) {
+                alert('데이터베이스 연결 중입니다. 잠시 후 다시 시도해 주세요.');
+                return;
+            }
+            const email = document.getElementById('loginEmail').value.trim().toLowerCase();
             const password = document.getElementById('loginPassword').value;
 
-            const users = JSON.parse(localStorage.getItem('lotto_hub_users')) || [];
-            // 복호화해서 비교 (대소문자 구분 없이 이메일 비교)
-            const user = users.find(u => u.email.toLowerCase() === email.toLowerCase() && decryptPassword(u.password) === password);
+            try {
+                const { db, collection, getDocs, query, where } = window.firebaseDB;
+                const q = query(collection(db, "users"), where("email", "==", email));
+                const querySnapshot = await getDocs(q);
+                
+                if (querySnapshot.empty) {
+                    alert('이메일 또는 비밀번호가 일치하지 않습니다.');
+                    return;
+                }
+                
+                let user = null;
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    if (decryptPassword(data.password) === password) {
+                        user = data;
+                    }
+                });
 
-            if (user) {
-                localStorage.setItem('lotto_hub_current_user', JSON.stringify({ email: user.email, nickname: user.nickname }));
-                window.location.href = 'index.html';
-            } else {
-                alert('이메일 또는 비밀번호가 일치하지 않습니다.');
+                if (user) {
+                    localStorage.setItem('lotto_hub_current_user', JSON.stringify({ email: user.email, nickname: user.nickname }));
+                    window.location.href = 'index.html';
+                } else {
+                    alert('이메일 또는 비밀번호가 일치하지 않습니다.');
+                }
+            } catch (err) {
+                console.error("Login Error:", err);
+                alert("로그인 중 오류가 발생했습니다.");
             }
         });
 
         // Forgot Password Logic
         const forgotPasswordBtn = document.getElementById('forgotPasswordBtn');
         if (forgotPasswordBtn) {
-            forgotPasswordBtn.addEventListener('click', (e) => {
+            forgotPasswordBtn.addEventListener('click', async (e) => {
                 e.preventDefault();
+                if (!window.firebaseDB) {
+                    alert('데이터베이스 연결 중입니다. 잠시 후 다시 시도해 주세요.');
+                    return;
+                }
                 const emailInput = prompt('가입하신 이메일 주소를 입력해 주세요.');
                 if (emailInput) {
-                    const users = JSON.parse(localStorage.getItem('lotto_hub_users')) || [];
-                    const foundUser = users.find(u => u.email.toLowerCase() === emailInput.trim().toLowerCase());
-                    if (foundUser) {
-                        alert(`회원님의 비밀번호는 [ ${decryptPassword(foundUser.password)} ] 입니다.\n확인 후 다시 로그인해 주세요.`);
-                    } else {
-                        alert('해당 이메일로 가입된 계정을 찾을 수 없습니다.');
+                    const email = emailInput.trim().toLowerCase();
+                    try {
+                        const { db, collection, getDocs, query, where } = window.firebaseDB;
+                        const q = query(collection(db, "users"), where("email", "==", email));
+                        const querySnapshot = await getDocs(q);
+                        
+                        if (!querySnapshot.empty) {
+                            let data = null;
+                            querySnapshot.forEach(doc => data = doc.data());
+                            alert(`회원님의 비밀번호는 [ ${decryptPassword(data.password)} ] 입니다.\n확인 후 다시 로그인해 주세요.`);
+                        } else {
+                            alert('해당 이메일로 가입된 계정을 찾을 수 없습니다.');
+                        }
+                    } catch (err) {
+                        console.error("Forgot PW Error:", err);
+                        alert("조회 중 오류가 발생했습니다.");
                     }
                 }
             });
@@ -127,8 +163,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // Signup Logic
     const signupForm = document.getElementById('signupForm');
     if (signupForm) {
-        signupForm.addEventListener('submit', (e) => {
+        signupForm.addEventListener('submit', async (e) => {
             e.preventDefault();
+            if (!window.firebaseDB) {
+                alert('데이터베이스 연결 중입니다. 잠시 후 다시 시도해 주세요.');
+                return;
+            }
             const email = document.getElementById('signupEmail').value.trim().toLowerCase();
             const nickname = document.getElementById('signupNickname').value.trim();
             const password = document.getElementById('signupPassword').value;
@@ -139,25 +179,40 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            const users = JSON.parse(localStorage.getItem('lotto_hub_users')) || [];
-            
-            if (users.find(u => u.email === email)) {
-                alert('이미 가입된 이메일입니다.');
-                return;
-            }
-            
-            if (users.find(u => u.nickname === nickname)) {
-                alert('이미 사용중입니다.');
-                return;
-            }
+            try {
+                const { db, collection, getDocs, addDoc, query, where } = window.firebaseDB;
+                
+                // 중복 이메일 체크
+                const qEmail = query(collection(db, "users"), where("email", "==", email));
+                const snapEmail = await getDocs(qEmail);
+                if (!snapEmail.empty) {
+                    alert('이미 가입된 이메일입니다.');
+                    return;
+                }
+                
+                // 중복 닉네임 체크
+                const qNick = query(collection(db, "users"), where("nickname", "==", nickname));
+                const snapNick = await getDocs(qNick);
+                if (!snapNick.empty) {
+                    alert('이미 사용중인 닉네임입니다.');
+                    return;
+                }
 
-            users.push({ email, nickname, password: encryptPassword(password) });
-            localStorage.setItem('lotto_hub_users', JSON.stringify(users));
-            
-            // Auto login after signup
-            localStorage.setItem('lotto_hub_current_user', JSON.stringify({ email, nickname }));
-            alert('회원가입이 완료되었습니다!');
-            window.location.href = 'index.html';
+                // 새 사용자 저장
+                await addDoc(collection(db, "users"), { 
+                    email, 
+                    nickname, 
+                    password: encryptPassword(password) 
+                });
+                
+                // Auto login after signup
+                localStorage.setItem('lotto_hub_current_user', JSON.stringify({ email, nickname }));
+                alert('회원가입이 완료되었습니다!');
+                window.location.href = 'index.html';
+            } catch (err) {
+                console.error("Signup Error:", err);
+                alert("회원가입 중 오류가 발생했습니다.");
+            }
         });
     }
 
