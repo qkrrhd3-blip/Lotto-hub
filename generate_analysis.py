@@ -265,6 +265,16 @@ def generate_draw_content(draw_num):
     <p><strong>결론적으로</strong>, 제 {draw_num}회 로또 추첨 결과는 완벽한 무작위성 속에서도 다수의 통계적 법칙들이 교차하며 만들어낸 수리적 예술 작품과 같습니다. 인공지능 분석 시스템은 이번 회차의 결과를 수백 대의 가상 서버를 통한 수만 번의 몬테카를로 시뮬레이션의 최신 피드백 데이터로 역전파(Backpropagation)시켰습니다. 이를 통해 머신러닝의 다층 퍼셉트론(MLP) 가중치는 더욱 정교해졌으며, 다음 회차에서 살아남을 최적의 확률적 교집합을 도출하는 데 훌륭한 자양분이 될 것입니다.</p>
     
     <p>복권은 본질적으로 운이 지배하는 게임입니다. 어떠한 분석도 100% 당첨을 보장하지 않습니다. 하지만 위와 같은 데이터 마이닝과 통계적 필터링을 거친 번호를 선택하는 과정은, 맹목적인 요행을 바라는 것을 넘어 데이터 과학의 짜릿함을 일상에서 경험하는 즐거운 취미가 될 수 있습니다. 앞으로도 <strong>Lotto hub</strong>와 함께 건강하고 지적인 로또 라이프를 즐기시길 바랍니다.</p>
+    
+    <div class="article-hashtags" style="margin-top: 50px; padding-top: 20px; border-top: 1px dashed var(--border-color); display: flex; gap: 10px; flex-wrap: wrap;">
+        <span style="background: #f1f5f9; color: var(--primary-color); padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">#로또{draw_num}회</span>
+        <span style="background: #f1f5f9; color: var(--primary-color); padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">#로또당첨번호</span>
+        <span style="background: #f1f5f9; color: var(--primary-color); padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">#당첨번호분석</span>
+        <span style="background: #f1f5f9; color: var(--primary-color); padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">#로또통계</span>
+        <span style="background: #f1f5f9; color: var(--primary-color); padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">#로또AI예측</span>
+        <span style="background: #f1f5f9; color: var(--primary-color); padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">#로또패턴</span>
+        <span style="background: #f1f5f9; color: var(--primary-color); padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">#홀짝고저분석</span>
+    </div>
     """
     return content
 

@@ -39,7 +39,6 @@
             <nav class="nav">
                 <a href="about.html" class="nav-btn">소개</a>
                 <a href="articles.html" class="nav-btn">로또 칼럼</a>
-                <a href="analysis.html" class="nav-btn">당첨번호 분석</a>
                 <a href="analysis.html" class="nav-btn active">당첨번호 분석</a>
                 <a href="community.html" class="nav-btn">커뮤니티</a>
                 <div id="authNavContainer" style="display: flex; align-items: center; border-left: 1px solid var(--border-color); padding-left: 20px; margin-left: 10px;"></div>
@@ -93,23 +92,23 @@
     <div style="background: #f8fafc; padding: 20px; border-radius: 8px; margin-bottom: 30px; text-align: center; border: 1px solid var(--border-color);">
         <div style="font-size: 1.2rem; margin-bottom: 15px; color: var(--text-main); font-weight: bold;">당첨 번호</div>
         <div>
-            <span class="number-ball ball-yellow">5</span><span class="number-ball ball-blue">11</span><span class="number-ball ball-blue">14</span><span class="number-ball ball-blue">17</span><span class="number-ball ball-gray">38</span><span class="number-ball ball-green">42</span> <span style="font-size: 1.5rem; color: #cbd5e1; margin: 0 10px;">+</span> <span class="number-ball ball-green">43</span>
+            <span class="number-ball ball-yellow">2</span><span class="number-ball ball-yellow">5</span><span class="number-ball ball-blue">13</span><span class="number-ball ball-gray">31</span><span class="number-ball ball-gray">34</span><span class="number-ball ball-gray">35</span> <span style="font-size: 1.5rem; color: #cbd5e1; margin: 0 10px;">+</span> <span class="number-ball ball-red">22</span>
         </div>
     </div>
     
     <p>이번 주 진행된 제 <strong>1121회</strong> 로또 추첨이 성공적으로 마무리되었습니다. 수백만 명의 참가자들이 기대와 설렘 속에서 추첨 방송을 지켜보았을 텐데요, 이번 회차 역시 무작위의 확률 속에서 대수의 법칙이 철저히 작용하며 흥미로운 숫자 배열을 만들어냈습니다. 이번 당첨 번호들을 수학적 통계와 인공지능 기반 패턴 분석 시스템을 통해 하나씩 해부해 보도록 하겠습니다. 로또 분석에 있어서 단순히 직관에 의존하는 것을 넘어 데이터 기반의 객관적인 시각을 확보하는 것은 매우 중요합니다.</p>
     
-    <p>당첨번호 6개의 총합은 <strong>127</strong>이며, 홀짝 비율은 <strong>3:3</strong>, 고저 비율은 <strong>2:4</strong>로 나타났습니다. 겉보기에는 단순한 숫자들의 나열 같지만, 이 안에는 역대 당첨 데이터의 거대한 흐름과 중심극한정리의 수학적 진리가 숨어있습니다. 본 칼럼에서는 이러한 1차원적인 지표뿐만 아니라 다차원적인 클러스터링과 산술복잡도(AC) 수치를 종합하여 이번 추첨의 특이점을 심층 분석합니다.</p>
+    <p>당첨번호 6개의 총합은 <strong>120</strong>이며, 홀짝 비율은 <strong>4:2</strong>, 고저 비율은 <strong>3:3</strong>로 나타났습니다. 겉보기에는 단순한 숫자들의 나열 같지만, 이 안에는 역대 당첨 데이터의 거대한 흐름과 중심극한정리의 수학적 진리가 숨어있습니다. 본 칼럼에서는 이러한 1차원적인 지표뿐만 아니라 다차원적인 클러스터링과 산술복잡도(AC) 수치를 종합하여 이번 추첨의 특이점을 심층 분석합니다.</p>
 
     <h2>1. 번호 총합(Sum)과 중심극한정리 분석</h2>
-    <p>이번 1121회의 6개 당첨 번호 합계는 <strong>127</strong>으로 산출되었습니다. 로또 번호의 총합은 이론상 21(1+2+3+4+5+6)부터 255(40+41+42+43+44+45)까지 폭넓은 분포를 가질 수 있습니다. 그러나 중심극한정리(Central Limit Theorem)에 따라 814만 개의 모든 조합 중 압도적인 다수는 총합이 120~160 사이인 거대한 정규분포 곡선의 중심(봉우리)에 위치하게 됩니다.</p>
+    <p>이번 1121회의 6개 당첨 번호 합계는 <strong>120</strong>으로 산출되었습니다. 로또 번호의 총합은 이론상 21(1+2+3+4+5+6)부터 255(40+41+42+43+44+45)까지 폭넓은 분포를 가질 수 있습니다. 그러나 중심극한정리(Central Limit Theorem)에 따라 814만 개의 모든 조합 중 압도적인 다수는 총합이 120~160 사이인 거대한 정규분포 곡선의 중심(봉우리)에 위치하게 됩니다.</p>
     
     <p>만약 이번 총합이 120~160 구간에 포함되었다면, 이는 <strong>"지극히 안정적이고 통계적 평균치에 부합하는 결과"</strong>라고 해석할 수 있습니다. 즉, 몬테카를로 시뮬레이션의 안전지대 안에 안착한 결과로 볼 수 있습니다. 반면 100 이하나 180 이상의 수치가 나왔다면 이는 확률적 꼬리(Tail Risk)에 해당하는 극단값으로, 이런 현상은 10~15회차에 한 번꼴로 나타나는 아웃라이어(Outlier)로 분류됩니다. AI 모델은 이러한 총합의 변동성을 지속적으로 모니터링하여 다음 회차 번호 추천 시 가중치 산정에 중요한 지표로 활용합니다.</p>
 
     <h2>2. 홀짝 비율과 고저 패턴의 확률적 균형</h2>
-    <p>홀수와 짝수의 비율은 로또 패턴 분석의 가장 기초적이면서도 강력한 도구입니다. 이번 회차의 홀수와 짝수 비율은 <strong>3:3</strong>입니다. 수학적으로 6개의 숫자를 무작위 추출할 때 홀짝 비율이 3:3이거나 4:2, 2:4가 될 확률이 전체의 약 80% 이상을 차지합니다. 6:0이나 0:6 같은 기형적인 극단적 비율은 통계적으로 거의 출현하지 않습니다.</p>
+    <p>홀수와 짝수의 비율은 로또 패턴 분석의 가장 기초적이면서도 강력한 도구입니다. 이번 회차의 홀수와 짝수 비율은 <strong>4:2</strong>입니다. 수학적으로 6개의 숫자를 무작위 추출할 때 홀짝 비율이 3:3이거나 4:2, 2:4가 될 확률이 전체의 약 80% 이상을 차지합니다. 6:0이나 0:6 같은 기형적인 극단적 비율은 통계적으로 거의 출현하지 않습니다.</p>
     
-    <p>또한, 1~22번까지를 저(Low)로, 23~45번까지를 고(High)로 나누는 고저 비율 역시 <strong>2:4</strong>로 나타났습니다. 사람들은 수동으로 마킹할 때 생일이나 특정 기념일에 의존하는 경향이 있어 1번부터 31번 사이의 앞번호(Low)에 선택이 편중되는 심리적 오류를 범하곤 합니다. 하지만 실제 추첨 기계는 이러한 인간의 심리를 배제한 채 완벽한 균형을 맞추려 합니다. 이번 회차에서 보여준 홀짝과 고저의 비율은 확률론적 이상값으로의 회귀가 얼마나 정교하게 이루어지고 있는지를 보여주는 증거입니다.</p>
+    <p>또한, 1~22번까지를 저(Low)로, 23~45번까지를 고(High)로 나누는 고저 비율 역시 <strong>3:3</strong>로 나타났습니다. 사람들은 수동으로 마킹할 때 생일이나 특정 기념일에 의존하는 경향이 있어 1번부터 31번 사이의 앞번호(Low)에 선택이 편중되는 심리적 오류를 범하곤 합니다. 하지만 실제 추첨 기계는 이러한 인간의 심리를 배제한 채 완벽한 균형을 맞추려 합니다. 이번 회차에서 보여준 홀짝과 고저의 비율은 확률론적 이상값으로의 회귀가 얼마나 정교하게 이루어지고 있는지를 보여주는 증거입니다.</p>
 
     <h2>3. 구간별 색상 분포와 이격도(Gap) 분석</h2>
     <p>로또 번호의 색상은 10번대 단위로 구분됩니다. 노란색(1~10), 파란색(11~20), 빨간색(21~30), 회색(31~40), 녹색(41~45)으로 나뉘는 이 색상 분포는 번호들이 얼마나 공간적으로 고르게 퍼져 있는지를 시각적으로 보여줍니다. 이번 회차에서는 특정 색상이 3개 이상 군집(Clustering)하는 쏠림 현상이 있었는지, 혹은 전 구간에 걸쳐 고르게 1~2개씩 분산되었는지가 관건입니다.</p>
@@ -127,6 +126,16 @@
     <p><strong>결론적으로</strong>, 제 1121회 로또 추첨 결과는 완벽한 무작위성 속에서도 다수의 통계적 법칙들이 교차하며 만들어낸 수리적 예술 작품과 같습니다. 인공지능 분석 시스템은 이번 회차의 결과를 수백 대의 가상 서버를 통한 수만 번의 몬테카를로 시뮬레이션의 최신 피드백 데이터로 역전파(Backpropagation)시켰습니다. 이를 통해 머신러닝의 다층 퍼셉트론(MLP) 가중치는 더욱 정교해졌으며, 다음 회차에서 살아남을 최적의 확률적 교집합을 도출하는 데 훌륭한 자양분이 될 것입니다.</p>
     
     <p>복권은 본질적으로 운이 지배하는 게임입니다. 어떠한 분석도 100% 당첨을 보장하지 않습니다. 하지만 위와 같은 데이터 마이닝과 통계적 필터링을 거친 번호를 선택하는 과정은, 맹목적인 요행을 바라는 것을 넘어 데이터 과학의 짜릿함을 일상에서 경험하는 즐거운 취미가 될 수 있습니다. 앞으로도 <strong>Lotto hub</strong>와 함께 건강하고 지적인 로또 라이프를 즐기시길 바랍니다.</p>
+    
+    <div class="article-hashtags" style="margin-top: 50px; padding-top: 20px; border-top: 1px dashed var(--border-color); display: flex; gap: 10px; flex-wrap: wrap;">
+        <span style="background: #f1f5f9; color: var(--primary-color); padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">#로또1121회</span>
+        <span style="background: #f1f5f9; color: var(--primary-color); padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">#로또당첨번호</span>
+        <span style="background: #f1f5f9; color: var(--primary-color); padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">#당첨번호분석</span>
+        <span style="background: #f1f5f9; color: var(--primary-color); padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">#로또통계</span>
+        <span style="background: #f1f5f9; color: var(--primary-color); padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">#로또AI예측</span>
+        <span style="background: #f1f5f9; color: var(--primary-color); padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">#로또패턴</span>
+        <span style="background: #f1f5f9; color: var(--primary-color); padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">#홀짝고저분석</span>
+    </div>
     
                     <!-- 본문 끝 -->
                 </div>
