@@ -313,9 +313,6 @@ def generate_draw_content(draw_num, data=None):
         <div>
             {balls_html} <span style="font-size: 1.5rem; color: #cbd5e1; margin: 0 10px;">+</span> {bonus_html}
         </div>
-        <div style="margin-top: 15px; font-size: 0.95rem; color: #555;">
-            1등 당첨자: <strong>{first_pz_co}명</strong> (1인당 당첨금: <strong>{first_win_amnt}원</strong>)
-        </div>
     </div>
     
     <p>이번 주 진행된 제 <strong>{draw_num}회</strong> 로또 추첨이 마무리되었습니다. 수백만 명의 참가자들이 기대와 설렘 속에서 지켜보았을 이번 회차 역시 무작위의 확률 속에서 대수의 법칙이 철저히 작용하며 흥미로운 숫자 배열을 만들어냈습니다. 이번 당첨 번호들을 수학적 통계와 인공지능 기반 패턴 분석 시스템을 통해 심도 있게 분석해 보겠습니다.</p>
