@@ -50,73 +50,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     await loadSavedGames();
 });
 
-// 당첨 번호 캐싱
-const winningNumbersCache = {};
-
-async function getWinningNumbers(drawNo) {
-    if (winningNumbersCache[drawNo] !== undefined) return winningNumbersCache[drawNo];
-    
-    try {
-        // 동행복권 API (CORS 프록시 사용)
-        const proxyUrl = 'https://api.allorigins.win/get?url=';
-        const targetUrl = encodeURIComponent(`https://www.dhlottery.co.kr/common.do?method=getLottoNumber&drwNo=${drawNo}`);
-        
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 5000); // 5초 타임아웃 설정
-        
-        const response = await fetch(proxyUrl + targetUrl, { signal: controller.signal });
-        clearTimeout(timeoutId);
-        
-        const data = await response.json();
-        const lottoData = JSON.parse(data.contents);
-
-        if (lottoData.returnValue === 'success') {
-            const winNums = [
-                lottoData.drwtNo1, lottoData.drwtNo2, lottoData.drwtNo3, 
-                lottoData.drwtNo4, lottoData.drwtNo5, lottoData.drwtNo6
-            ];
-            winningNumbersCache[drawNo] = {
-                numbers: winNums,
-                bonus: lottoData.bnusNo,
-                date: lottoData.drwNoDate
-            };
-            return winningNumbersCache[drawNo];
-        } else {
-            // 미래 회차이거나 결과 없음
-            winningNumbersCache[drawNo] = null;
-            return null;
-        }
-    } catch (e) {
-        console.error('당첨 번호 조회 실패:', e);
-        return null;
-    }
-}
-
 function getColorClass(num) {
     if(num <= 10) return 'color-yellow';
     if(num <= 20) return 'color-blue';
     if(num <= 30) return 'color-red';
     if(num <= 40) return 'color-gray';
     return 'color-green';
-}
-
-function checkWinning(myNumbers, winData) {
-    if (!winData) return { rank: 0, html: '<span class="win-badge win-wait">추첨 대기중 ⏳</span>' };
-    
-    let matchCount = 0;
-    myNumbers.forEach(n => {
-        if (winData.numbers.includes(n)) matchCount++;
-    });
-    
-    const hasBonus = myNumbers.includes(winData.bonus);
-
-    if (matchCount === 6) return { rank: 1, html: '<span class="win-badge win-1">🎉 1등 당첨!!</span>' };
-    if (matchCount === 5 && hasBonus) return { rank: 2, html: '<span class="win-badge win-2">🎊 2등 당첨!</span>' };
-    if (matchCount === 5) return { rank: 3, html: '<span class="win-badge win-3">🎯 3등 당첨</span>' };
-    if (matchCount === 4) return { rank: 4, html: '<span class="win-badge win-4">✨ 4등 당첨</span>' };
-    if (matchCount === 3) return { rank: 5, html: '<span class="win-badge win-5">👍 5등 당첨</span>' };
-    
-    return { rank: 6, html: '<span class="win-badge win-none">낙첨</span>' };
 }
 
 async function renderSavedGamesList(docs) {
@@ -146,10 +85,6 @@ async function renderSavedGamesList(docs) {
     const tabs = [];
     const cards = [];
 
-    // 병렬로 모든 회차의 당첨 번호 미리 가져오기 (성능 최적화)
-    const uniqueDraws = [...new Set(docs.map(record => record.drawNo))];
-    await Promise.all(uniqueDraws.map(drawNo => getWinningNumbers(drawNo)));
-
     for (const record of docs) {
         const currentIdx = recordIndex--;
         const drawNo = record.drawNo;
@@ -172,21 +107,13 @@ async function renderSavedGamesList(docs) {
         card.className = 'saved-game-card';
         card.style.display = 'none';
         
-        // 당첨 결과 가져오기
-        const winData = await getWinningNumbers(drawNo);
-        
         let gamesHtml = '';
         record.games.forEach((gameObj, idx) => {
             const gameNums = Array.isArray(gameObj) ? gameObj : gameObj.numbers;
-            const winResult = checkWinning(gameNums, winData);
             
             let ballsHtml = '';
             gameNums.forEach(num => {
-                const isWinNum = winData && winData.numbers.includes(num);
-                const isBonus = winData && winData.bonus === num;
-                const highlightStyle = isWinNum ? 'box-shadow: 0 0 10px yellow; border: 2px solid gold;' : (isBonus ? 'box-shadow: 0 0 10px red; border: 2px solid red;' : '');
-                
-                ballsHtml += `<div class="ball ${getColorClass(num)}" style="width: 32px; height: 32px; font-size: 0.85rem; ${highlightStyle}">${num}</div>`;
+                ballsHtml += `<div class="ball ${getColorClass(num)}" style="width: 32px; height: 32px; font-size: 0.85rem;">${num}</div>`;
             });
 
             gamesHtml += `
@@ -195,19 +122,15 @@ async function renderSavedGamesList(docs) {
                     <div class="lotto-balls" style="gap: 5px;">
                         ${ballsHtml}
                     </div>
-                    ${winResult.html}
                 </div>
             `;
         });
-
-        const realWinHtml = winData ? `<div style="font-size: 0.85rem; color: var(--text-muted); text-align: center; margin-bottom: 15px; background: rgba(0,0,0,0.05); padding: 10px; border-radius: 8px;">이번 주 실제 당첨 번호: <strong style="color:var(--primary-color)">${winData.numbers.join(', ')} + ${winData.bonus}</strong></div>` : '';
 
         card.innerHTML = `
             <div class="saved-game-header">
                 <span class="draw-badge">제 ${drawNo}회 추첨</span>
                 <span style="color: var(--text-muted); font-size: 0.85rem;">저장일시: ${dateStr}</span>
             </div>
-            ${realWinHtml}
             <div class="saved-games-list">
                 ${gamesHtml}
             </div>
