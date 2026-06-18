@@ -178,13 +178,17 @@ def get_color(num):
 def fetch_lotto_data(draw_num):
     url = f"https://www.dhlottery.co.kr/common.do?method=getLottoNumber&drwNo={draw_num}"
     try:
+        import ssl
+        ctx = ssl.create_default_context()
+        ctx.check_hostname = False
+        ctx.verify_mode = ssl.CERT_NONE
         req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
-        with urllib.request.urlopen(req, timeout=3) as response:
+        with urllib.request.urlopen(req, timeout=10, context=ctx) as response:
             data = json.loads(response.read().decode('utf-8'))
             if data.get('returnValue') == 'success':
                 return data
     except Exception as e:
-        pass
+        print(f"Error fetching {draw_num}: {e}")
     return None
 
 def get_latest_draw_number():
