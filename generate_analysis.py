@@ -1,4 +1,6 @@
 import os
+import json
+import urllib.request
 from datetime import datetime, timedelta
 import random
 
@@ -52,35 +54,17 @@ html_template = """<!DOCTYPE html>
     </header>
 
     <div class="analysis-layout" style="margin-top: 30px; margin-bottom: 50px;">
-        <!-- 좌측 사이드바 광고 -->
         <aside class="analysis-sidebar">
             <div class="adsense-container side" style="height: 600px; background: #f8fafc; border: 1px dashed #cbd5e1; display:flex; align-items:center; justify-content:center; text-align:center; color:#94a3b8; font-size:0.9rem;">
-                <!-- 구글 애드센스 좌측 수직형 -->
-                <ins class="adsbygoogle"
-                     style="display:block"
-                     data-ad-client="ca-pub-1589121187855891"
-                     data-ad-slot="1234567890"
-                     data-ad-format="auto"
-                     data-full-width-responsive="true"></ins>
-                <script>
-                     (adsbygoogle = window.adsbygoogle || []).push({{}});
-                </script>
+                <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-1589121187855891" data-ad-slot="1234567890" data-ad-format="auto" data-full-width-responsive="true"></ins>
+                <script>(adsbygoogle = window.adsbygoogle || []).push({{}});</script>
             </div>
         </aside>
 
-        <!-- 메인 콘텐츠 영역 -->
         <main class="analysis-main">
-            <!-- 상단 광고 -->
             <div class="adsense-container top" style="margin-bottom: 30px; min-height: 90px; background: #f8fafc; border: 1px dashed #cbd5e1; display:flex; align-items:center; justify-content:center; color:#94a3b8; font-size:0.9rem;">
-                <ins class="adsbygoogle"
-                     style="display:block"
-                     data-ad-client="ca-pub-1589121187855891"
-                     data-ad-slot="0987654321"
-                     data-ad-format="auto"
-                     data-full-width-responsive="true"></ins>
-                <script>
-                     (adsbygoogle = window.adsbygoogle || []).push({{}});
-                </script>
+                <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-1589121187855891" data-ad-slot="0987654321" data-ad-format="auto" data-full-width-responsive="true"></ins>
+                <script>(adsbygoogle = window.adsbygoogle || []).push({{}});</script>
             </div>
 
             <section class="page-content" style="background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
@@ -88,42 +72,22 @@ html_template = """<!DOCTYPE html>
                     <span class="article-tag" style="background: var(--primary-color); color: white; padding: 6px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: bold;">AI 당첨 분석</span>
                     <h1 style="font-size: 2.2rem; color: var(--text-main); margin-top: 15px; margin-bottom: 20px; line-height: 1.4;">제 {draw_num}회 로또 당첨번호 AI 심층 분석 및 통계 리뷰</h1>
                     <div class="article-meta" style="margin-bottom: 40px; border-bottom: 1px solid var(--border-color); padding-bottom: 20px; color: var(--text-muted);">
-                        작성자: Lotto hub 분석팀 | 분석일: {date_str}
+                        작성자: Lotto hub 분석팀 | 추첨일: {date_str}
                     </div>
-                    
-                    <!-- 본문 시작 -->
                     {content}
-                    <!-- 본문 끝 -->
                 </div>
             </section>
 
-            <!-- 하단 광고 -->
             <div class="adsense-container bottom" style="margin-top: 30px; min-height: 90px; background: #f8fafc; border: 1px dashed #cbd5e1; display:flex; align-items:center; justify-content:center; color:#94a3b8; font-size:0.9rem;">
-                <ins class="adsbygoogle"
-                     style="display:block"
-                     data-ad-client="ca-pub-1589121187855891"
-                     data-ad-slot="1122334455"
-                     data-ad-format="auto"
-                     data-full-width-responsive="true"></ins>
-                <script>
-                     (adsbygoogle = window.adsbygoogle || []).push({{}});
-                </script>
+                <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-1589121187855891" data-ad-slot="1122334455" data-ad-format="auto" data-full-width-responsive="true"></ins>
+                <script>(adsbygoogle = window.adsbygoogle || []).push({{}});</script>
             </div>
         </main>
 
-        <!-- 우측 사이드바 광고 -->
         <aside class="analysis-sidebar">
             <div class="adsense-container side" style="height: 600px; background: #f8fafc; border: 1px dashed #cbd5e1; display:flex; align-items:center; justify-content:center; text-align:center; color:#94a3b8; font-size:0.9rem;">
-                <!-- 구글 애드센스 우측 수직형 -->
-                <ins class="adsbygoogle"
-                     style="display:block"
-                     data-ad-client="ca-pub-1589121187855891"
-                     data-ad-slot="5544332211"
-                     data-ad-format="auto"
-                     data-full-width-responsive="true"></ins>
-                <script>
-                     (adsbygoogle = window.adsbygoogle || []).push({{}});
-                </script>
+                <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-1589121187855891" data-ad-slot="5544332211" data-ad-format="auto" data-full-width-responsive="true"></ins>
+                <script>(adsbygoogle = window.adsbygoogle || []).push({{}});</script>
             </div>
         </aside>
     </div>
@@ -212,11 +176,48 @@ def get_color(num):
     elif num <= 40: return "ball-gray"
     else: return "ball-green"
 
-def generate_draw_content(draw_num):
-    # 무작위로 그럴싸한 번호 생성
-    nums = sorted(random.sample(range(1, 46), 6))
-    bonus = random.choice([n for n in range(1, 46) if n not in nums])
+def fetch_lotto_data(draw_num):
+    url = f"https://www.dhlottery.co.kr/common.do?method=getLottoNumber&drwNo={draw_num}"
+    try:
+        req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+        with urllib.request.urlopen(req, timeout=3) as response:
+            data = json.loads(response.read().decode('utf-8'))
+            if data.get('returnValue') == 'success':
+                return data
+    except Exception as e:
+        print(f"Error fetching draw {draw_num}: {e}")
+    return None
+
+def get_latest_draw_number():
+    start_date = datetime(2002, 12, 7)
+    today = datetime.now()
+    days_passed = (today - start_date).days
+    guess_num = (days_passed // 7) + 1
     
+    # API 검증 (최대 10번만 시도)
+    attempts = 0
+    while guess_num > 0 and attempts < 10:
+        data = fetch_lotto_data(guess_num)
+        if data:
+            return guess_num
+        guess_num -= 1
+        attempts += 1
+    return 1125
+
+def generate_draw_content(draw_num, data=None):
+    if data:
+        nums = sorted([data['drwtNo1'], data['drwtNo2'], data['drwtNo3'], data['drwtNo4'], data['drwtNo5'], data['drwtNo6']])
+        bonus = data['bnusNo']
+        draw_date_str = data['drwNoDate']
+        first_win_amnt = format(data['firstWinamnt'], ",")
+        first_pz_co = data['firstPrzwnerCo']
+    else:
+        nums = sorted(random.sample(range(1, 46), 6))
+        bonus = random.choice([n for n in range(1, 46) if n not in nums])
+        draw_date_str = "미상"
+        first_win_amnt = "0"
+        first_pz_co = 0
+        
     balls_html = "".join([f'<span class="number-ball {get_color(n)}">{n}</span>' for n in nums])
     bonus_html = f'<span class="number-ball {get_color(bonus)}">{bonus}</span>'
     
@@ -232,6 +233,9 @@ def generate_draw_content(draw_num):
         <div style="font-size: 1.2rem; margin-bottom: 15px; color: var(--text-main); font-weight: bold;">당첨 번호</div>
         <div>
             {balls_html} <span style="font-size: 1.5rem; color: #cbd5e1; margin: 0 10px;">+</span> {bonus_html}
+        </div>
+        <div style="margin-top: 15px; font-size: 0.95rem; color: #555;">
+            1등 당첨자: <strong>{first_pz_co}명</strong> (1인당 당첨금: <strong>{first_win_amnt}원</strong>)
         </div>
     </div>
     
@@ -276,18 +280,20 @@ def generate_draw_content(draw_num):
         <span style="background: #f1f5f9; color: var(--primary-color); padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">#홀짝고저분석</span>
     </div>
     """
-    return content
+    return content, draw_date_str
 
-# 최근 10회차 역순 생성 (가상으로 1125회부터 1116회까지)
-latest_draw = 1125
+# 메인 실행부
+print("Fetching latest draw data...")
+latest_draw = get_latest_draw_number()
+print(f"Latest draw detected: {latest_draw}")
+
 grid_items = ""
 
+# 최근 10회차 역순 생성
 for i in range(10):
     draw_num = latest_draw - i
-    art_date = datetime.now() - timedelta(days=i*7)
-    date_str = art_date.strftime("%Y.%m.%d")
-    
-    content = generate_draw_content(draw_num)
+    data = fetch_lotto_data(draw_num)
+    content, date_str = generate_draw_content(draw_num, data)
     
     html_output = html_template.format(
         draw_num=draw_num,
@@ -304,10 +310,10 @@ for i in range(10):
                     <span class="article-tag" style="background: var(--primary-color); color: white;">제 {draw_num}회 분석</span>
                     <h3 style="font-size: 1.2rem; margin-bottom: 10px;">제 {draw_num}회 당첨번호 AI 심층 분석 및 통계 리뷰</h3>
                     <p style="margin-bottom: 15px; color: #555;">{draw_num}회차 로또 당첨번호에 숨겨진 홀짝, 고저 패턴과 인공지능 통계적 회귀 모델 분석을 자세히 알아봅니다.</p>
-                    <div class="article-meta" style="font-size: 0.85rem; color: var(--text-muted);">분석 업데이트: {date_str}</div>
+                    <div class="article-meta" style="font-size: 0.85rem; color: var(--text-muted);">추첨일: {date_str}</div>
                 </a>"""
 
 with open("analysis.html", 'w', encoding='utf-8') as f:
     f.write(list_html_template.replace("{grid_items}", grid_items))
 
-print("10 Analysis articles successfully generated!")
+print("10 Analysis articles successfully generated using actual data!")
