@@ -136,9 +136,6 @@ async function renderSavedGamesList(docs) {
     tabsContainer.style.marginBottom = '20px';
     
     const cardsContainer = document.createElement('div');
-    
-    savedGamesContainer.appendChild(tabsContainer);
-    savedGamesContainer.appendChild(cardsContainer);
 
     let recordIndex = docs.length;
     const tabs = [];
@@ -267,6 +264,9 @@ async function renderSavedGamesList(docs) {
         tabs.push(tab);
         cards.push(card);
     }
+
+    savedGamesContainer.appendChild(tabsContainer);
+    savedGamesContainer.appendChild(cardsContainer);
     
     // 첫 번째 탭(가장 최근) 자동 클릭
     if (tabs.length > 0) {
