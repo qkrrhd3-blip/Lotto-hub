@@ -61,7 +61,12 @@ async function getWinningNumbers(drawNo) {
         const proxyUrl = 'https://api.allorigins.win/get?url=';
         const targetUrl = encodeURIComponent(`https://www.dhlottery.co.kr/common.do?method=getLottoNumber&drwNo=${drawNo}`);
         
-        const response = await fetch(proxyUrl + targetUrl);
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 5000); // 5초 타임아웃 설정
+        
+        const response = await fetch(proxyUrl + targetUrl, { signal: controller.signal });
+        clearTimeout(timeoutId);
+        
         const data = await response.json();
         const lottoData = JSON.parse(data.contents);
 
