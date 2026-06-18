@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 const winningNumbersCache = {};
 
 async function getWinningNumbers(drawNo) {
-    if (winningNumbersCache[drawNo]) return winningNumbersCache[drawNo];
+    if (winningNumbersCache[drawNo] !== undefined) return winningNumbersCache[drawNo];
     
     try {
         // 동행복권 API (CORS 프록시 사용)
@@ -143,6 +143,10 @@ async function renderSavedGamesList(docs) {
     let recordIndex = docs.length;
     const tabs = [];
     const cards = [];
+
+    // 병렬로 모든 회차의 당첨 번호 미리 가져오기 (성능 최적화)
+    const uniqueDraws = [...new Set(docs.map(record => record.drawNo))];
+    await Promise.all(uniqueDraws.map(drawNo => getWinningNumbers(drawNo)));
 
     for (const record of docs) {
         const currentIdx = recordIndex--;
