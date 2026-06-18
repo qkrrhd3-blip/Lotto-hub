@@ -94,8 +94,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const password = document.getElementById('loginPassword').value;
 
             const users = JSON.parse(localStorage.getItem('lotto_hub_users')) || [];
-            // 복호화해서 비교
-            const user = users.find(u => u.email === email && decryptPassword(u.password) === password);
+            // 복호화해서 비교 (대소문자 구분 없이 이메일 비교)
+            const user = users.find(u => u.email.toLowerCase() === email.toLowerCase() && decryptPassword(u.password) === password);
 
             if (user) {
                 localStorage.setItem('lotto_hub_current_user', JSON.stringify({ email: user.email, nickname: user.nickname }));
@@ -113,7 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const emailInput = prompt('가입하신 이메일 주소를 입력해 주세요.');
                 if (emailInput) {
                     const users = JSON.parse(localStorage.getItem('lotto_hub_users')) || [];
-                    const foundUser = users.find(u => u.email === emailInput.trim());
+                    const foundUser = users.find(u => u.email.toLowerCase() === emailInput.trim().toLowerCase());
                     if (foundUser) {
                         alert(`회원님의 비밀번호는 [ ${decryptPassword(foundUser.password)} ] 입니다.\n확인 후 다시 로그인해 주세요.`);
                     } else {
@@ -129,7 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (signupForm) {
         signupForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            const email = document.getElementById('signupEmail').value.trim();
+            const email = document.getElementById('signupEmail').value.trim().toLowerCase();
             const nickname = document.getElementById('signupNickname').value.trim();
             const password = document.getElementById('signupPassword').value;
             const passwordConfirm = document.getElementById('signupPasswordConfirm').value;
