@@ -62,19 +62,23 @@ body {
     font-weight: 700;
     color: var(--primary-color);
     letter-spacing: -0.5px;
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
 .nav {
     display: flex;
-    gap: 32px;
+    gap: 15px;
     align-items: center;
+    flex-wrap: nowrap;
+    white-space: nowrap;
 }
 
 .nav a {
     text-decoration: none;
     color: var(--text-main);
     font-weight: 500;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     transition: color 0.2s ease;
 }
 
