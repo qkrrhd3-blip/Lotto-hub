@@ -71,7 +71,7 @@ html_template = """<!DOCTYPE html>
 
             <section class="page-content" style="background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
                 <div class="article-body long-article-content">
-                    <span class="article-tag" style="background: var(--primary-color); color: white; padding: 6px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: bold;">AI 당첨 분석</span>
+                    <span class="article-tag" style="background: var(--primary-color); color: white; padding: 6px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: bold;">당첨 분석</span>
                     <h1 style="font-size: 2.2rem; color: var(--text-main); margin-top: 15px; margin-bottom: 20px; line-height: 1.4;">{title}</h1>
                     <div class="article-meta" style="margin-bottom: 40px; border-bottom: 1px solid var(--border-color); padding-bottom: 20px; color: var(--text-muted);">
                         작성자: Lotto hub 분석팀 | 추첨일: {date_str}
@@ -117,7 +117,7 @@ list_html_template = """<!DOCTYPE html>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>당첨번호 분석 | Lotto hub</title>
-    <meta name="description" content="매주 업데이트되는 로또 당첨번호 AI 심층 분석 및 통계 리뷰를 확인하세요.">
+    <meta name="description" content="매주 업데이트되는 로또 당첨번호 심층 분석 및 통계 리뷰를 확인하세요.">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -140,8 +140,8 @@ list_html_template = """<!DOCTYPE html>
     <main>
         <section class="page-header">
             <div class="container">
-                <h2>당첨번호 AI 심층 분석</h2>
-                <p>최근 회차 당첨번호에 숨겨진 통계적 비밀과 패턴을 구글 애드센스 최적화 정보글(1500자 이상)로 심도 있게 파헤칩니다.</p>
+                <h2>당첨번호 심층 분석</h2>
+                <p>최근 회차 당첨번호에 숨겨진 통계적 비밀과 패턴을 심도 있게 파헤칩니다.</p>
             </div>
         </section>
 
@@ -262,7 +262,7 @@ def generate_dynamic_info(nums, draw_num):
         title_candidates.append(f"로또 {draw_num}회 AI 분석 | 총합 {total_sum} 초저득점! 앞번호 집중 현상 분석")
         
     if not title_candidates:
-        title_candidates.append(f"제 {draw_num}회 당첨번호 AI 심층 분석 | 홀짝 {odd_count}:{even_count} 완벽한 통계적 균형")
+        title_candidates.append(f"제 {draw_num}회 당첨번호 심층 분석 | 홀짝 {odd_count}:{even_count} 완벽한 통계적 균형")
         title_candidates.append(f"로또 {draw_num}회차 당첨 리뷰 | 정규분포의 마법, 총합 {total_sum}과 회귀 패턴")
         
     title = random.choice(title_candidates)
