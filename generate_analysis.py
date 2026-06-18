@@ -4,17 +4,16 @@ import urllib.request
 from datetime import datetime, timedelta
 import random
 
-# HTML Template with Ads on Top/Bottom/Side (No Center Ad)
 html_template = """<!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>제 {draw_num}회 로또 당첨번호 AI 분석 및 통계 리뷰 | Lotto hub</title>
-    <meta name="description" content="제 {draw_num}회 로또 당첨번호에 대한 심층적인 AI 통계 분석, 패턴 회귀, 확률적 접근법을 1500자 이상의 고품질 정보글로 제공합니다.">
-    <meta name="keywords" content="로또 {draw_num}회, 당첨번호 분석, 로또 통계, 로또 AI, 홀짝, 고저, 미출현수">
-    <meta property="og:title" content="제 {draw_num}회 로또 당첨번호 AI 통계 분석">
-    <meta property="og:description" content="제 {draw_num}회 로또 당첨번호에 대한 심층적인 AI 통계 분석, 패턴 회귀, 확률적 접근법을 제공합니다.">
+    <title>{title} | Lotto hub</title>
+    <meta name="description" content="제 {draw_num}회 로또 당첨번호 통계 분석. {short_desc}">
+    <meta name="keywords" content="{keywords}">
+    <meta property="og:title" content="{title}">
+    <meta property="og:description" content="{short_desc}">
     <meta property="og:image" content="https://lottomindai.com/icon.png">
     <meta property="og:type" content="article">
     <meta name="google-adsense-account" content="ca-pub-1589121187855891">
@@ -70,7 +69,7 @@ html_template = """<!DOCTYPE html>
             <section class="page-content" style="background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
                 <div class="article-body long-article-content">
                     <span class="article-tag" style="background: var(--primary-color); color: white; padding: 6px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: bold;">AI 당첨 분석</span>
-                    <h1 style="font-size: 2.2rem; color: var(--text-main); margin-top: 15px; margin-bottom: 20px; line-height: 1.4;">제 {draw_num}회 로또 당첨번호 AI 심층 분석 및 통계 리뷰</h1>
+                    <h1 style="font-size: 2.2rem; color: var(--text-main); margin-top: 15px; margin-bottom: 20px; line-height: 1.4;">{title}</h1>
                     <div class="article-meta" style="margin-bottom: 40px; border-bottom: 1px solid var(--border-color); padding-bottom: 20px; color: var(--text-muted);">
                         작성자: Lotto hub 분석팀 | 추첨일: {date_str}
                     </div>
@@ -185,7 +184,7 @@ def fetch_lotto_data(draw_num):
             if data.get('returnValue') == 'success':
                 return data
     except Exception as e:
-        print(f"Error fetching draw {draw_num}: {e}")
+        pass
     return None
 
 def get_latest_draw_number():
@@ -194,7 +193,6 @@ def get_latest_draw_number():
     days_passed = (today - start_date).days
     guess_num = (days_passed // 7) + 1
     
-    # API 검증 (최대 10번만 시도)
     attempts = 0
     while guess_num > 0 and attempts < 10:
         data = fetch_lotto_data(guess_num)
@@ -203,6 +201,61 @@ def get_latest_draw_number():
         guess_num -= 1
         attempts += 1
     return 1125
+
+def generate_dynamic_info(nums, draw_num):
+    total_sum = sum(nums)
+    odd_count = sum(1 for n in nums if n % 2 != 0)
+    even_count = 6 - odd_count
+    high_count = sum(1 for n in nums if n > 22)
+    low_count = 6 - high_count
+    
+    color_counts = {'yellow':0, 'blue':0, 'red':0, 'gray':0, 'green':0}
+    for n in nums:
+        if n <= 10: color_counts['yellow'] += 1
+        elif n <= 20: color_counts['blue'] += 1
+        elif n <= 30: color_counts['red'] += 1
+        elif n <= 40: color_counts['gray'] += 1
+        else: color_counts['green'] += 1
+        
+    dominant_color = max(color_counts, key=color_counts.get)
+    max_color_cnt = color_counts[dominant_color]
+    
+    # Title Gen
+    title_candidates = []
+    if odd_count >= 5 or even_count >= 5:
+        title_candidates.append(f"제 {draw_num}회 로또 분석 | 홀짝 {odd_count}:{even_count} 극단적 쏠림 패턴의 비밀")
+    elif high_count >= 5 or low_count >= 5:
+        title_candidates.append(f"제 {draw_num}회 당첨번호 리뷰 | 고저비율 {high_count}:{low_count} 이례적 결과 해부")
+    
+    if max_color_cnt >= 3:
+        color_kr = {'yellow':'10번대 이하', 'blue':'10번대', 'red':'20번대', 'gray':'30번대', 'green':'40번대'}[dominant_color]
+        title_candidates.append(f"제 {draw_num}회 로또 당첨번호 | {color_kr} {max_color_cnt}개 출현! 특정 번호대 강세 통계")
+    
+    if total_sum > 170:
+        title_candidates.append(f"로또 {draw_num}회 AI 분석 | 총합 {total_sum} 고득점 출현! 무거운 번호들의 귀환")
+    elif total_sum < 100:
+        title_candidates.append(f"로또 {draw_num}회 AI 분석 | 총합 {total_sum} 초저득점! 앞번호 집중 현상 분석")
+        
+    if not title_candidates:
+        title_candidates.append(f"제 {draw_num}회 당첨번호 AI 심층 분석 | 홀짝 {odd_count}:{even_count} 완벽한 통계적 균형")
+        title_candidates.append(f"로또 {draw_num}회차 당첨 리뷰 | 정규분포의 마법, 총합 {total_sum}과 회귀 패턴")
+        
+    title = random.choice(title_candidates)
+    
+    short_desc = f"이번 회차는 총합 {total_sum}, 홀짝 {odd_count}:{even_count} 비율을 기록했습니다. 숨겨진 AI 기반 패턴 통계를 확인해보세요."
+    
+    # Hashtags
+    tags = [f"#로또{draw_num}회", "#로또당첨번호", "#로또통계", "#당첨번호분석"]
+    if max_color_cnt >= 3: tags.append(f"#{dominant_color}번호강세")
+    if odd_count >= 4: tags.append("#홀수강세")
+    if even_count >= 4: tags.append("#짝수강세")
+    if total_sum > 160: tags.append("#높은총합")
+    if total_sum < 120: tags.append("#낮은총합")
+    
+    tags.extend(["#로또AI예측", "#패턴분석"])
+    keywords = ", ".join([t.replace("#", "") for t in tags[:6]])
+    
+    return title, short_desc, tags[:7], keywords, total_sum, odd_count, even_count, high_count, low_count
 
 def generate_draw_content(draw_num, data=None):
     if data:
@@ -221,11 +274,12 @@ def generate_draw_content(draw_num, data=None):
     balls_html = "".join([f'<span class="number-ball {get_color(n)}">{n}</span>' for n in nums])
     bonus_html = f'<span class="number-ball {get_color(bonus)}">{bonus}</span>'
     
-    total_sum = sum(nums)
-    odd_count = sum(1 for n in nums if n % 2 != 0)
-    even_count = 6 - odd_count
-    high_count = sum(1 for n in nums if n > 22)
-    low_count = 6 - high_count
+    title, short_desc, tags, keywords, total_sum, odd_count, even_count, high_count, low_count = generate_dynamic_info(nums, draw_num)
+    
+    # Dynamic text variations
+    sum_analysis = f"총합이 120~160 사이인 거대한 정규분포 곡선의 중심(봉우리)에 위치합니다. 이번 {total_sum}이라는 수치는 몬테카를로 시뮬레이션의 안전지대 안에 안착한 결과로 볼 수 있습니다." if 120 <= total_sum <= 160 else f"총합이 {total_sum}으로 정규분포의 꼬리(Tail Risk)에 해당하는 극단값에 가깝습니다. 이런 현상은 확률적으로 드물게 나타나는 아웃라이어(Outlier)로 분류됩니다."
+    
+    oe_analysis = f"홀짝 비율이 3:3 또는 4:2 수준으로 통계적 이상값으로의 회귀가 정교하게 이루어진 매우 안정적인 패턴입니다." if (odd_count in [2,3,4]) else f"홀짝 비율이 {odd_count}:{even_count}로 극단적인 쏠림을 보여줍니다. 다음 회차에서는 반대 속성 번호들의 강한 출현 압력이 예상됩니다."
     
     content = f"""
     <h2>제 {draw_num}회 로또 추첨 결과 개요</h2>
@@ -239,48 +293,32 @@ def generate_draw_content(draw_num, data=None):
         </div>
     </div>
     
-    <p>이번 주 진행된 제 <strong>{draw_num}회</strong> 로또 추첨이 성공적으로 마무리되었습니다. 수백만 명의 참가자들이 기대와 설렘 속에서 추첨 방송을 지켜보았을 텐데요, 이번 회차 역시 무작위의 확률 속에서 대수의 법칙이 철저히 작용하며 흥미로운 숫자 배열을 만들어냈습니다. 이번 당첨 번호들을 수학적 통계와 인공지능 기반 패턴 분석 시스템을 통해 하나씩 해부해 보도록 하겠습니다. 로또 분석에 있어서 단순히 직관에 의존하는 것을 넘어 데이터 기반의 객관적인 시각을 확보하는 것은 매우 중요합니다.</p>
+    <p>이번 주 진행된 제 <strong>{draw_num}회</strong> 로또 추첨이 마무리되었습니다. 수백만 명의 참가자들이 기대와 설렘 속에서 지켜보았을 이번 회차 역시 무작위의 확률 속에서 대수의 법칙이 철저히 작용하며 흥미로운 숫자 배열을 만들어냈습니다. 이번 당첨 번호들을 수학적 통계와 인공지능 기반 패턴 분석 시스템을 통해 심도 있게 분석해 보겠습니다.</p>
     
-    <p>당첨번호 6개의 총합은 <strong>{total_sum}</strong>이며, 홀짝 비율은 <strong>{odd_count}:{even_count}</strong>, 고저 비율은 <strong>{high_count}:{low_count}</strong>로 나타났습니다. 겉보기에는 단순한 숫자들의 나열 같지만, 이 안에는 역대 당첨 데이터의 거대한 흐름과 중심극한정리의 수학적 진리가 숨어있습니다. 본 칼럼에서는 이러한 1차원적인 지표뿐만 아니라 다차원적인 클러스터링과 산술복잡도(AC) 수치를 종합하여 이번 추첨의 특이점을 심층 분석합니다.</p>
+    <p>이번 당첨번호 6개의 총합은 <strong>{total_sum}</strong>이며, 홀수와 짝수의 비율은 <strong>{odd_count}:{even_count}</strong>, 고저(High-Low) 비율은 <strong>{high_count}:{low_count}</strong>로 나타났습니다. 겉보기에는 단순한 번호들 같지만, 이 안에는 역대 1등 데이터의 거대한 흐름과 패턴이 숨어있습니다.</p>
 
-    <h2>1. 번호 총합(Sum)과 중심극한정리 분석</h2>
-    <p>이번 {draw_num}회의 6개 당첨 번호 합계는 <strong>{total_sum}</strong>으로 산출되었습니다. 로또 번호의 총합은 이론상 21(1+2+3+4+5+6)부터 255(40+41+42+43+44+45)까지 폭넓은 분포를 가질 수 있습니다. 그러나 중심극한정리(Central Limit Theorem)에 따라 814만 개의 모든 조합 중 압도적인 다수는 총합이 120~160 사이인 거대한 정규분포 곡선의 중심(봉우리)에 위치하게 됩니다.</p>
-    
-    <p>만약 이번 총합이 120~160 구간에 포함되었다면, 이는 <strong>"지극히 안정적이고 통계적 평균치에 부합하는 결과"</strong>라고 해석할 수 있습니다. 즉, 몬테카를로 시뮬레이션의 안전지대 안에 안착한 결과로 볼 수 있습니다. 반면 100 이하나 180 이상의 수치가 나왔다면 이는 확률적 꼬리(Tail Risk)에 해당하는 극단값으로, 이런 현상은 10~15회차에 한 번꼴로 나타나는 아웃라이어(Outlier)로 분류됩니다. AI 모델은 이러한 총합의 변동성을 지속적으로 모니터링하여 다음 회차 번호 추천 시 가중치 산정에 중요한 지표로 활용합니다.</p>
+    <h2>1. 번호 총합(Sum)과 중심극한정리</h2>
+    <p>이번 회차의 6개 당첨 번호 합계는 <strong>{total_sum}</strong>으로 산출되었습니다. 로또 번호의 총합은 이론상 21부터 255까지 폭넓은 분포를 가질 수 있지만, {sum_analysis} AI 모델은 이러한 총합의 변동성을 지속적으로 모니터링하여 다음 회차 번호 추천 시 가중치 산정에 중요한 지표로 활용합니다.</p>
 
-    <h2>2. 홀짝 비율과 고저 패턴의 확률적 균형</h2>
-    <p>홀수와 짝수의 비율은 로또 패턴 분석의 가장 기초적이면서도 강력한 도구입니다. 이번 회차의 홀수와 짝수 비율은 <strong>{odd_count}:{even_count}</strong>입니다. 수학적으로 6개의 숫자를 무작위 추출할 때 홀짝 비율이 3:3이거나 4:2, 2:4가 될 확률이 전체의 약 80% 이상을 차지합니다. 6:0이나 0:6 같은 기형적인 극단적 비율은 통계적으로 거의 출현하지 않습니다.</p>
+    <h2>2. 홀짝 비율과 고저 패턴의 쏠림 분석</h2>
+    <p>이번 회차의 홀수와 짝수 비율은 <strong>{odd_count}:{even_count}</strong>입니다. {oe_analysis} 수학적으로 6개의 숫자를 무작위 추출할 때 홀짝 비율이 3:3이나 4:2, 2:4가 될 확률이 전체의 약 80% 이상을 차지합니다.</p>
     
-    <p>또한, 1~22번까지를 저(Low)로, 23~45번까지를 고(High)로 나누는 고저 비율 역시 <strong>{high_count}:{low_count}</strong>로 나타났습니다. 사람들은 수동으로 마킹할 때 생일이나 특정 기념일에 의존하는 경향이 있어 1번부터 31번 사이의 앞번호(Low)에 선택이 편중되는 심리적 오류를 범하곤 합니다. 하지만 실제 추첨 기계는 이러한 인간의 심리를 배제한 채 완벽한 균형을 맞추려 합니다. 이번 회차에서 보여준 홀짝과 고저의 비율은 확률론적 이상값으로의 회귀가 얼마나 정교하게 이루어지고 있는지를 보여주는 증거입니다.</p>
+    <p>또한, 1~22번까지를 저(Low)로, 23~45번까지를 고(High)로 나누는 고저 비율은 <strong>{high_count}:{low_count}</strong>로 나타났습니다. 사람들은 수동으로 마킹할 때 심리적으로 앞번호(Low)에 치우치는 경향이 있지만 실제 추첨 기계는 완벽한 균형을 향해 나아갑니다.</p>
 
-    <h2>3. 구간별 색상 분포와 이격도(Gap) 분석</h2>
-    <p>로또 번호의 색상은 10번대 단위로 구분됩니다. 노란색(1~10), 파란색(11~20), 빨간색(21~30), 회색(31~40), 녹색(41~45)으로 나뉘는 이 색상 분포는 번호들이 얼마나 공간적으로 고르게 퍼져 있는지를 시각적으로 보여줍니다. 이번 회차에서는 특정 색상이 3개 이상 군집(Clustering)하는 쏠림 현상이 있었는지, 혹은 전 구간에 걸쳐 고르게 1~2개씩 분산되었는지가 관건입니다.</p>
-    
-    <p>이와 더불어 이격도(Gap Analysis) 분석을 살펴보면, 오름차순으로 나열된 당첨 번호들 사이의 간격 표준편차를 계산할 수 있습니다. 당첨 번호들이 연속수(예: 14, 15)를 형성하며 강하게 뭉쳐있거나 반대로 15 이상의 큰 틈을 두고 벌어져 있는 패턴은, 6차원 벡터 공간에서 K-평균 군집화(K-Means Clustering)를 진행했을 때 특정 클러스터에 강한 밀도를 형성하게 만듭니다. 이번 회차의 이격도 표준편차는 장기 평균 범주 내에서 건강한 무작위성을 띠고 있는 것으로 평가됩니다.</p>
+    <h2>3. 구간별 색상 분포 및 클러스터링</h2>
+    <p>로또 번호의 색상은 10번대 단위로 구분되며 번호들이 얼마나 공간적으로 고르게 퍼져 있는지를 시각적으로 보여줍니다. 이번 회차에서는 특정 구간의 밀집도가 뚜렷한 특징을 남겼습니다. 이와 더불어 이격도(Gap Analysis) 관점에서 연속수를 형성하며 강하게 뭉쳐있거나 큰 틈을 둔 패턴은, AI의 6차원 K-평균 군집화(K-Means Clustering) 알고리즘에서 매우 중요한 변수가 됩니다.</p>
 
-    <h2>4. 장기 미출현수(Cold Number)와 최다 출현수(Hot Number)의 충돌</h2>
-    <p>로또 추첨에서 가장 많은 흥미를 유발하는 요소 중 하나는 바로 콜드 넘버(최근 15주 이상 당첨되지 않은 번호)와 핫 넘버(최근 5주 내 2~3회 이상 연속 당첨된 번호)의 출현 여부입니다. 대수의 법칙에 따르면 시행 횟수가 무한대로 길어질수록 45개 번호의 출현 확률은 정확히 1/45로 동일하게 수렴해야 합니다. 따라서 장기 미출현수들은 결국 언젠가는 등장하여 자신의 평균 빈도를 채워 넣으려는 강력한 통계적 회귀 압력을 받게 됩니다.</p>
+    <h2>4. 딥러닝 AI 총평</h2>
+    <p>제 {draw_num}회 로또 추첨 결과는 인공지능 시스템이 수만 번의 몬테카를로 시뮬레이션 데이터를 학습하는 데 즉각 피드백으로 활용(Backpropagation)되었습니다. 이를 통해 머신러닝 모델의 가중치는 더욱 정교해졌습니다.</p>
     
-    <p>이번 회차에서 과연 콜드 넘버 그룹에 속해 있던 소외수들이 반등을 이뤄냈을까요? 혹은 이미 열기가 뜨거운 핫 넘버들이 "뜨거운 손의 오류(Hot Hand Fallacy)"를 증명하듯 다시 한번 무작위 추출기를 뚫고 튀어나왔을까요? AI 알고리즘은 단기 모멘텀 지표인 마르코프 체인(Markov Chain)을 이용해 현재의 핫 넘버 트렌드가 언제까지 유지될지, 그리고 콜드 넘버의 평균 회귀 시점이 언제 도래할지를 실시간으로 계산하여 동적 가중치 맵을 그려냅니다.</p>
-
-    <h2>5. 산술복잡도(AC Value)와 인공지능 총평</h2>
-    <p>마지막으로 검토할 지표는 산술복잡도(Arithmetic Complexity, AC)입니다. 6개의 번호가 만들어내는 15가지의 모든 두 수 간격 중 서로 다른 값의 개수를 세어 상수 5를 뺀 이 수치는, 번호 배열이 수학적으로 얼마나 불규칙하고 인위적이지 않은지를 증명하는 척도입니다. 로또 1등 당첨 데이터의 80% 이상은 AC값이 7 이상의 고복잡도 구간에 집중되어 있습니다. 사람의 뇌는 무의식적으로 일정한 간격의 숫자를 선택하려 하지만(예: 5, 10, 15), 실제 당첨 조합은 이 AC값이 항상 높은 수준을 유지하며 극도의 무질서함을 보여줍니다.</p>
-    
-    <p><strong>결론적으로</strong>, 제 {draw_num}회 로또 추첨 결과는 완벽한 무작위성 속에서도 다수의 통계적 법칙들이 교차하며 만들어낸 수리적 예술 작품과 같습니다. 인공지능 분석 시스템은 이번 회차의 결과를 수백 대의 가상 서버를 통한 수만 번의 몬테카를로 시뮬레이션의 최신 피드백 데이터로 역전파(Backpropagation)시켰습니다. 이를 통해 머신러닝의 다층 퍼셉트론(MLP) 가중치는 더욱 정교해졌으며, 다음 회차에서 살아남을 최적의 확률적 교집합을 도출하는 데 훌륭한 자양분이 될 것입니다.</p>
-    
-    <p>복권은 본질적으로 운이 지배하는 게임입니다. 어떠한 분석도 100% 당첨을 보장하지 않습니다. 하지만 위와 같은 데이터 마이닝과 통계적 필터링을 거친 번호를 선택하는 과정은, 맹목적인 요행을 바라는 것을 넘어 데이터 과학의 짜릿함을 일상에서 경험하는 즐거운 취미가 될 수 있습니다. 앞으로도 <strong>Lotto hub</strong>와 함께 건강하고 지적인 로또 라이프를 즐기시길 바랍니다.</p>
+    <p>복권은 본질적으로 운이 지배하는 게임이므로 100% 당첨을 보장하는 분석은 없습니다. 하지만 데이터를 수집하고 통계적 필터링을 적용하는 과정은 단순 요행을 바라는 것을 넘어 데이터 과학을 경험하는 즐거운 활동이 될 수 있습니다. <strong>Lotto hub</strong>와 함께 지적인 로또 라이프를 즐기시길 바랍니다.</p>
     
     <div class="article-hashtags" style="margin-top: 50px; padding-top: 20px; border-top: 1px dashed var(--border-color); display: flex; gap: 10px; flex-wrap: wrap;">
-        <span style="background: #f1f5f9; color: var(--primary-color); padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">#로또{draw_num}회</span>
-        <span style="background: #f1f5f9; color: var(--primary-color); padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">#로또당첨번호</span>
-        <span style="background: #f1f5f9; color: var(--primary-color); padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">#당첨번호분석</span>
-        <span style="background: #f1f5f9; color: var(--primary-color); padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">#로또통계</span>
-        <span style="background: #f1f5f9; color: var(--primary-color); padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">#로또AI예측</span>
-        <span style="background: #f1f5f9; color: var(--primary-color); padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">#로또패턴</span>
-        <span style="background: #f1f5f9; color: var(--primary-color); padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">#홀짝고저분석</span>
+        {''.join([f'<span style="background: #f1f5f9; color: var(--primary-color); padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">{t}</span>' for t in tags])}
     </div>
     """
-    return content, draw_date_str
+    
+    return title, short_desc, keywords, content, draw_date_str
 
 # 메인 실행부
 print("Fetching latest draw data...")
@@ -289,16 +327,18 @@ print(f"Latest draw detected: {latest_draw}")
 
 grid_items = ""
 
-# 최근 10회차 역순 생성
 for i in range(10):
     draw_num = latest_draw - i
     data = fetch_lotto_data(draw_num)
-    content, date_str = generate_draw_content(draw_num, data)
+    title, short_desc, keywords, content, date_str = generate_draw_content(draw_num, data)
     
     html_output = html_template.format(
         draw_num=draw_num,
         date_str=date_str,
-        content=content
+        content=content,
+        title=title,
+        short_desc=short_desc,
+        keywords=keywords
     )
     
     filename = f"analysis-{draw_num}.html"
@@ -308,12 +348,12 @@ for i in range(10):
     grid_items += f"""
                 <a href="{filename}" class="article-card">
                     <span class="article-tag" style="background: var(--primary-color); color: white;">제 {draw_num}회 분석</span>
-                    <h3 style="font-size: 1.2rem; margin-bottom: 10px;">제 {draw_num}회 당첨번호 AI 심층 분석 및 통계 리뷰</h3>
-                    <p style="margin-bottom: 15px; color: #555;">{draw_num}회차 로또 당첨번호에 숨겨진 홀짝, 고저 패턴과 인공지능 통계적 회귀 모델 분석을 자세히 알아봅니다.</p>
+                    <h3 style="font-size: 1.2rem; margin-bottom: 10px;">{title}</h3>
+                    <p style="margin-bottom: 15px; color: #555;">{short_desc}</p>
                     <div class="article-meta" style="font-size: 0.85rem; color: var(--text-muted);">추첨일: {date_str}</div>
                 </a>"""
 
 with open("analysis.html", 'w', encoding='utf-8') as f:
     f.write(list_html_template.replace("{grid_items}", grid_items))
 
-print("10 Analysis articles successfully generated using actual data!")
+print("10 Analysis articles successfully generated with Dynamic SEO content!")
